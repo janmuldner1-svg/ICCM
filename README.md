@@ -5,15 +5,16 @@ See http://geoscripting-wur.github.io/ProjectIntro/#(1)
 1. Modify the README.md by following the explanation in the [above link] 
 1. When ready, create an issue on https://github.com/geoscripting-2021/Project_Starter/issues by following the explanation in the above presentation 
 1. See submission deadline for the project proposal
-1. Then review another team
-1. You will obtain a GO/NO go from the Geoscripting team.
+1. Then review another two teams
+1. You will obtain a GO/NO go from the Geoscripting team
+1. Deadline is next week Friday 15u.
 
 Remove everything above this line.
 
 ---
 
 ## Geoscripting project repository.
-Geoscripting 2020 
+Geoscripting 2022
 - Title:
 - Team:
 - Date:
