@@ -26,5 +26,7 @@ Day 2
 * Add all datasets, start clipping each one to the above mentioned extent.
 * Look into exercises/tutorials and see what we would be using to identify mismatches (ex. with Matto Grosso state and agricultural land could be useful for this)
 * Look at reply from Rhamadan, if we get one
+* Look at how we could visualize end product (Shiny?)
+
 
 
