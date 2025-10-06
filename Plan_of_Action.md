@@ -3,6 +3,7 @@ Plan of Action Project Week
 Reproducible for other regions in Indonesia
 
 By Wednesday evening: Basic code to retrieve datasets and dataset for extent fixed.
+Use shiny for visualization? -> Pascal will look into it.
 
 Day 1
 
