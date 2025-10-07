@@ -1,4 +1,3 @@
-if(!"sf" %in% installed.packages()){install.packages("sf")}
 library(sf)
 
 createExtent <- function(data_path, shapefile_path) {

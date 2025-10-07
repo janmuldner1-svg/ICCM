@@ -1,4 +1,5 @@
 # import packages
+if(!"sf" %in% installed.packages()){install.packages("sf")}
 
 
 # Create necessary directories
