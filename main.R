@@ -8,7 +8,7 @@ if(!dir.exists("data")){dir.create("data")}
 if(!dir.exists("output")){dir.create("output")}
 
 # Source the download function
-source("downloadFiles.R")
+source("R/downloadFiles.R")
 
 # Download the official timber and oil palm concession data
 download_timber_concessions()
