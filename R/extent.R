@@ -31,7 +31,7 @@ createExtent <- function(data_path, shapefile_path) {
 #     roi = roi,
 #     start_date = start_date,
 #     end_date = end_date,
-#     bands = c("B03", "B04", "CLOUD")
+#     bands = c("B02", "B03", "B04")
 #   )
 #   
 #   # Download the imagery
