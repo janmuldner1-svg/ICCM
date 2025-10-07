@@ -18,3 +18,26 @@ createExtent <- function(data_path, shapefile_path) {
   cropped_data <- st_intersection(data, extent)
   return(cropped_data)
 }
+
+#stolen snippet of code for sentinel data for later
+# download_images_and_prepare_data <- function(shapefile_path, start_date, end_date) {
+#   # Read the input file
+#   roi <- st_read(shapefile_path)
+#   
+#   # Define the spatial and temporal extent for the sits data cube
+#   cube <- sits_cube(
+#     source = "MPC",
+#     collection = "SENTINEL-2-L2A",
+#     roi = roi,
+#     start_date = start_date,
+#     end_date = end_date,
+#     bands = c("B03", "B04", "CLOUD")
+#   )
+#   
+#   # Download the imagery
+#   images <- sits_cube_copy(cube, roi = roi, res = 10, output_dir = "data")
+#   
+#   
+#   return(images)
+# }
+
