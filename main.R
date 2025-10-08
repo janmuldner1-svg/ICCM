@@ -14,5 +14,6 @@ source("R/extent.R")
 
 # Download the official timber and oil palm concession data
 download_and_extract_Kayong()
+
 download_timber_concessions()
 download_oil_palm_concessions()
