@@ -17,5 +17,7 @@ download_and_extract_Kayong()
 download_timber_concessions()
 download_oil_palm_concessions()
 
-cropped <- createExtent("data/oil_palm_data.json", "data/Kayong_boundary.geojson", "data/cropped_oil_palm.geojson")
-plot (cropped) 
+cropped_oilpalm_concession <- createExtent("data/oil_palm_data.json", 
+                                           "data/Kayong_boundary.geojson", 
+                                           "data/cropped_oil_palm.geojson")
+plot (cropped_oilpalm_concession) 
