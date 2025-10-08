@@ -1,21 +1,34 @@
 library(sf)
 
-createExtent <- function(data_path, shapefile_path) {
+
+createExtent <- function(data_path, shapefile_path, output_path = NULL) {
   # Setting the extent of the data to the shape of the shapefile. Requires the
   # data path and shapefile path as input, and will give the data cropped to the
   # shape of the shapefile as output.
   
-  data <- st_read(data_path)
-  extent <- st_read(shapefile_path)
+  data <- st_read(data_path, quiet = TRUE)
+  extent <- st_read(shapefile_path, quiet = TRUE)
   
-  #Checking whether the CRS is the same, if not convert the crs of the data to 
-  #the crs of the shapefile (extent)
-  if (st_crs(data) != st_crs(shape)) {
+  # Check if CRS matches, transform if necessary
+  if (st_crs(data) != st_crs(extent)) {
     message("Transforming CRS to match shapefile CRS")
     data <- st_transform(data, st_crs(extent))
   }
   
+  # Crop data to extent
   cropped_data <- st_intersection(data, extent)
+  
+  # Save cropped data if output_path is provided and file does not exist
+  if (!is.null(output_path)) {
+    if (file.exists(output_path)) {
+      message("Output file already exists, skipping save: ", output_path)
+    } else {
+      st_write(cropped_data, output_path, delete_dsn = FALSE)
+      message("Cropped data saved to: ", output_path)
+    }
+  }
+  
+  # Return cropped data
   return(cropped_data)
 }
 
