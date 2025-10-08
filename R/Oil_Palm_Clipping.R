@@ -21,7 +21,6 @@ spatvector <- vect(boundary)
 plantations_clipped <- mask(oil_palm_plantations, spatvector)
 
 # Creating function that identifies mismatch between concessions and plantations
-#function()
 
 mismatches <- mask(plantations_clipped, concessions_clipped, inverse = TRUE)
 plot(mismatches)
