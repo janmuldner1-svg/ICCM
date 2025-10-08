@@ -15,3 +15,5 @@ source("R/extent.R")
 # Download the official timber and oil palm concession data
 download_timber_concessions()
 download_oil_palm_concessions()
+
+

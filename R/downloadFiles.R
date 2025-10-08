@@ -52,12 +52,12 @@ download_timber_concessions <- function(){
 
 # Download the oil palm concession data
 download_oil_palm_concessions <- function(){
-  data_oil_palm_URL <- 'http://gis-gfw.wri.org/arcgis/rest/services/country_data/asia/MapServer/2/query?where=1%3D1&outFields=*&outSR=4326&f=json'
+  data_oil_palm_URL <- 'https://hub.arcgis.com/api/v3/datasets/f82b539b9b2f495e853670ddc3f0ce68_2/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1'
   
   if(!file.exists('data/oil_palm_data')){
     download.file(url = data_oil_palm_URL, "data/oil_palm_data.json")
   }
 }
-
+download_and_extract_Kayong()
 # Forest loss dataset in MS Teams
 # Oil palm dataset? 
