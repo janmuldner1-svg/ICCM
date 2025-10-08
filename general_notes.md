@@ -1,0 +1,18 @@
+Extent
+geoboundaries - released in 2017 (hasnt changed)
+
+Concessions
+oil palm - gfw 2023, current and planned
+timber - 2020, from world resources institute, geoparquet
+
+backup: 
+timber: gfw, managed forest concessions, updated last in 2023, combined with:
+wood fiber: gfw, last updated in 2018
+
+
+occurence of deforestation and palm plantations: 
+Hansen Global Forest change, 2000-2024. 
+Palm probability model 2025, its for 2023
+
+Back up: 
+Global Map of Oil Palm Plantations, from 2019..
