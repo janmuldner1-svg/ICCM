@@ -1,13 +1,12 @@
 library(sf)
 
 
-createExtent <- function(data_path, shapefile_path, output_path = NULL) {
-  # Setting the extent of the data to the shape of the shapefile. Requires the
-  # data path and shapefile path as input, and will give the data cropped to the
+createExtent <- function(data, extent, output_path = NULL) {
+  # Setting the extent of the data to the shape of the extent provided. Requires 
+  # the data and extent as input. it's optional to give the outputfile path as 
+  # well if you want to save the output. The output is the data cropped to the
   # shape of the shapefile as output.
-  
-  data <- st_read(data_path, quiet = TRUE)
-  extent <- st_read(shapefile_path, quiet = TRUE)
+
   
   # Check if CRS matches, transform if necessary
   if (st_crs(data) != st_crs(extent)) {
