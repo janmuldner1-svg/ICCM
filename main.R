@@ -17,3 +17,7 @@ download_and_extract_Kayong()
 
 download_timber_concessions()
 download_oil_palm_concessions()
+
+
+# example
+#cropped <- createExtent("data/all_points.shp", "data/study_area_boundary.shp", "data/all_points_cropped.geojson")
