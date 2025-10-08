@@ -55,7 +55,7 @@ download_oil_palm_concessions <- function(){
   data_oil_palm_URL <- 'https://hub.arcgis.com/api/v3/datasets/f82b539b9b2f495e853670ddc3f0ce68_2/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1'
   
   if(!file.exists('data/oil_palm_data')){
-    download.file(url = data_oil_palm_URL, "data/oil_palm_data.json")
+    download.file(url = data_oil_palm_URL, "data/palm_tree_concessions.json")
   }
 }
 download_and_extract_Kayong()
