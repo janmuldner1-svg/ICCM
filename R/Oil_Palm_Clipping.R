@@ -45,11 +45,6 @@ filtered_polygons_sf <- polygons_sf[polygons_sf$area_m2 >= 10000, ]
 # Write GeoJSON
 st_write(filtered_polygons_sf, "output/filtered_polygons.geojson")
 
-# Statistics
-cat("Number of mismatch polygons:", nrow(filtered_polygons_sf), "\n")
-cat("Total area (m2):", sum(filtered_polygons_sf$area_m2), "\n")
-cat("Total area (km2):", sum(filtered_polygons_sf$area_m2) / 1000000, "\n")
-
 # Number of polygons
 n_polygons <- nrow(filtered_polygons_sf)
 
@@ -62,7 +57,7 @@ mean_area <- mean(filtered_polygons_sf$area_m2)
 # Standard deviation of area (m²)
 sd_area <- sd(filtered_polygons_sf$area_m2)
 
-# Print nicely
+# Statistics
 cat("Number of polygons:", n_polygons, "\n")
 cat("Total area (m²):", total_area, "\n")
 cat("Mean polygon area (m²):", mean_area, "\n")
