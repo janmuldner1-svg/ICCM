@@ -7,6 +7,25 @@ createExtent <- function(data, extent, output_path = NULL) {
   # well if you want to save the output. The output is the data cropped to the
   # shape of the shapefile as output.
 
+  # Function to load data if input is a file path and turns data into sf-object
+  load_if_path <- function(input) {
+    if (is.character(input)) {
+      message(sprintf("Reading file from: %s", input))
+      return(st_read(input, quiet = TRUE))
+    } else if (!inherits(input, "sf")) {
+      stop("Input must be either a file path (character) or an sf-object")
+    } else {
+      return(input)
+    }
+  }
+  
+  # Load data and extent if they are file paths
+  data <- load_if_path(data)
+  extent <- load_if_path(extent)
+  
+  # Validating data
+  data <- st_make_valid(data)
+  extent <- st_make_valid(extent)
   
   # Check if CRS matches, transform if necessary
   if (st_crs(data) != st_crs(extent)) {
@@ -20,7 +39,7 @@ createExtent <- function(data, extent, output_path = NULL) {
   # Save cropped data if output_path is provided and file does not exist
   if (!is.null(output_path)) {
     if (file.exists(output_path)) {
-      message("Output file already exists, skipping save: ", output_path)
+      message("Output file already exists, no need for save: ", output_path)
     } else {
       st_write(cropped_data, output_path, delete_dsn = FALSE)
       message("Cropped data saved to: ", output_path)
