@@ -31,6 +31,7 @@ st_write(wood_fiber_crop, "data/wood_fiber.json", driver = "GeoJSON")
 geojson1 <- fromJSON("data/managed_forest2.json")
 geojson2 <- fromJSON("data/wood_fiber.json")
 
+
 # Check that both .json files are feature collections
 if (geojson1$type != "FeatureCollection" || geojson2$type != "FeatureCollection") {
   stop("Both files must be GeoJSON FeatureCollections")
@@ -46,4 +47,5 @@ combined_geojson <- list(
 )
 
 # Write the combined GeoJSON back to file to create one timber concessions file
-write_json(combined_geojson, "dat/timber_concessions.geojson", auto_unbox = TRUE, pretty = TRUE)
+write_json(combined_geojson, "data/timber_concessions.geojson", auto_unbox = TRUE, pretty = TRUE)
+
