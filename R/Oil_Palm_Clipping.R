@@ -13,7 +13,6 @@ oil_palm_plantations <- rast("data/ketapang_palm_2023_90.tif")
 
 sf_use_s2(FALSE)
 
-#concessions_clipped <- createExtent("data/palm_tree_concessions.json","data/Kayong_boundary.geojson")
 concessions_clipped <- st_intersection(oil_palm_concessions, boundary)
 
 spatvector <- vect(boundary)
@@ -28,3 +27,21 @@ plot(concessions_clipped)
 plot(plantations_clipped)
 
 writeRaster(mismatches,"output/mtest.tif", overwrite = TRUE)
+
+mismatches_polygons <- as.polygons(mismatches)
+
+# If mismatches_polygons is terra SpatVector, convert first:
+polygons_sf <- st_as_sf(mismatches_polygons)
+
+# Cast to singlepart polygons
+polygons_sf <- st_cast(polygons_sf, "POLYGON")
+
+# Calculate area in square meters
+polygons_sf$area_m2 <- as.numeric(st_area(polygons_sf))
+
+# Filter polygons with area >= 10000 m² (100 pixels)
+filtered_polygons_sf <- polygons_sf[polygons_sf$area_m2 >= 10000, ]
+
+# Write GeoJSON
+st_write(filtered_polygons_sf, "output/filtered_polygons.geojson")
+
