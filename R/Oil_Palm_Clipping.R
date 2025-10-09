@@ -4,6 +4,7 @@ source("R/downloadFiles.R")
 
 library(sf)
 library(terra)
+library(dplyr)
 
 boundary <- download_and_extract_Kayong()
 download_oil_palm_concessions()
@@ -13,7 +14,48 @@ oil_palm_plantations <- rast("data/ketapang_palm_2023_90.tif")
 
 sf_use_s2(FALSE)
 
-concessions_clipped <- st_intersection(oil_palm_concessions, boundary)
+# Write code that will merge (union) all concession polygons that share  a faulty  border
+# (Some of the concessions should be connected directly, but they are not in the acquired dataset, thus creating faulty gaps)
+
+# First, create list of problematic polygons using their pairs IDs
+pairs <- list(
+  c(998, 1055),
+  c(1055, 1211),
+  c(1211, 1054),
+  c(1054, 1000),
+  c(1054, 1213),
+  c(1213, 1000)
+)
+
+# Function to dissolve pair by union
+dissolved_concessions <- function(oil_palm_concessions, id_col, pairs) {
+  for (pair in pairs) {
+    # Filter polygons for the current pair of IDs (used ChatGPT for assistance)
+    to_union <- oil_palm_concessions %>% filter(!!sym(id_col) %in% pair)
+    # Union the geometries
+    union_geom <- st_union(to_union)
+    # Remove original polygons in pair
+    oil_palm_concessions <- oil_palm_concessions %>% filter(! (!!sym(id_col) %in% pair))
+    # Create a new row with unioned geometry and combined IDs
+    new_row <- to_union[1, ]
+    new_row[[id_col]] <- paste(pair, collapse = "_")
+    st_geometry(new_row) <- union_geom
+    
+    # Add new dissolved polygon back
+    oil_palm_concessions <- rbind(oil_palm_concessions, new_row)
+  }
+  return(oil_palm_concessions)
+}
+
+# Apply new function
+concessions_fixed <- dissolved_concessions(oil_palm_concessions, "objectid", pairs)
+
+# Write to new geojson
+st_write(concessions_fixed, "output/concessions_fixed.geojson")
+
+
+  # Clip the fixed concessions to
+concessions_clipped <- st_intersection(dissolved_concessions, boundary)
 
 spatvector <- vect(boundary)
 
