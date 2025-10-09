@@ -14,10 +14,12 @@ source("R/extent.R")
 
 # Download the official timber and oil palm concession data
 download_and_extract_Kayong()
-
 download_timber_concessions()
 download_oil_palm_concessions()
 
 
-# example
-#cropped <- createExtent("data/all_points.shp", "data/study_area_boundary.shp", "data/all_points_cropped.geojson")
+#Example code to run extent on wood fiber data with kayong boundary as extent
+extent = "data/Kayong_boundary.geojson"
+wood_fiber_data = "data/wood_fiber_data.json"
+test <- createExtent(wood_fiber_data, extent)
+plot(test)
