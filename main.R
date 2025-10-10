@@ -11,6 +11,7 @@ if(!dir.exists("output")){dir.create("output")}
 # Source the download function
 source("R/downloadFiles.R")
 source("R/extent.R")
+source("R/Oil_Palm_Clipping.R")
 
 # Download the official timber and oil palm concession data 
 download_and_extract_Kayong()
@@ -19,18 +20,24 @@ extent <- "data/Kayong_boundary.geojson"
 download_wood_fiber_concessions()
 wood_fiber_data = "data/wood_fiber_data.json"
 
+download_oil_palm_concessions()
 oil_palm_concessions <- st_read("data/palm_tree_concessions.json")
 oil_palm_plantations <- rast("data/ketapang_palm_2023_90.tif")
 
 # Limit areas of dataset to the extent
 wood_fiber_clipped <- createExtent(wood_fiber_data, extent)
-concessions_clipped <- createExtent(oil_palm_concessions, extent)
-
+oil_palm_concessions_clipped <- createExtent(oil_palm_concessions, extent)
+#oil_palm_plantations_clipped <- createExtent(oil_palm_plantations, extent)
+spatvector <- vect(extent)
+oil_palm_plantations_clipped <- mask(oil_palm_plantations, spatvector)
 
 ### OIL PALM ###
-spatvector <- vect(extent)
+test123 <- Identify_mismatch_polygons(oil_palm_plantations_clipped, oil_palm_concessions_clipped)
+plot(test123)
 
-plantations_clipped <- mask(oil_palm_plantations, spatvector)
+
+
+
 
 # Identifying mismatches between concessions and plantations
 mismatches <- mask(plantations_clipped, concessions_clipped, inverse = TRUE)
