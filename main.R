@@ -24,11 +24,11 @@ oil_palm_plantations <- rast("data/ketapang_palm_2023_90.tif")
 
 # Limit areas of dataset to the extent
 wood_fiber_clipped <- createExtent(wood_fiber_data, extent)
-concessions_clipped <- createExtent(oil_palm_concessions, boundary)
+concessions_clipped <- createExtent(oil_palm_concessions, extent)
 
 
 ### OIL PALM ###
-spatvector <- vect(boundary)
+spatvector <- vect(extent)
 
 plantations_clipped <- mask(oil_palm_plantations, spatvector)
 
@@ -67,7 +67,6 @@ cat ("Number of football fields:", total_area/7140, "\n")
 ###
 #potentially use/remove
 # Write GeoJSON of filtered polygons
-st_write(filtered_polygons_sf, "output/filtered_polygons.geojson")
+st_write(filtered_polygons_sf, "output/filtered_polygons_oilpalm.geojson")
 
-# Write mismatches to tif
-writeRaster(mismatches,"output/mismatches.tif", overwrite = TRUE)
+
