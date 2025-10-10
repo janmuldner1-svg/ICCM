@@ -4,36 +4,29 @@
 library(sf)
 library(dplyr)
 
-# Download the boundaries of Kayong Utara regency as extent (project ROI)
 download_and_extract_Kayong <- function() {
+  # Download the boundaries of Kayong Utara regency as extent (project ROI), 
+  # only execute the download if the data is not downloaded yet. 
+  # Requires no input, the output is a geojson file called 
+  # Kayong_boundary.geojson in the data-folder
+  
   # Define URL and destination path
   adm2_URL <- 'https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/IDN/ADM2/geoBoundaries-IDN-ADM2_simplified.geojson'
   dest_folder <- "data"
-  destfile <- file.path(dest_folder, "geoBoundaries-IDN-ADM2_simplified.geojson")
   outputfile <- file.path(dest_folder, "Kayong_boundary.geojson")
   
-  if (!dir.exists(dest_folder)) dir.create(dest_folder)
-  if (!file.exists(destfile)) download.file(adm2_URL, destfile, mode = "wb")
-  
-  # Load full GeoJSON into R as sf object
-  adm2 <- sf::st_read(destfile, quiet = TRUE)
-  
-  # Filter dataset to only keep row with Kayong Utara
-  kayong <- dplyr::filter(adm2, shapeName == "Kayong Utara")
-  
-  # Stop code if there is no Kayong Utara row (to prevent it from breaking)
-  if (nrow(kayong) == 0) return(NULL)
-  
-  # Save Kayong boundary as new .geojson
-  sf::st_write(kayong, outputfile, delete_dsn = TRUE, quiet = TRUE)
-  # Remove the original file with all regencies, return Kayong boundary
-  file.remove(destfile)
-  return(kayong)
+  if(!file.exists('data/Kayong_boundary.geojson')){
+    download.file(url = adm2_URL, "data/Kayong_boundary.geojson", mode = "wb")
+  }
 }
 
-# Download the timber concession data
+
 download_wood_fiber_concessions <- function(){
-  # Download wood fiber concessions
+  # Download the concessions of wood fiber. 
+  # only execute the download if the data is not downloaded yet. 
+  # Requires no input, the output is a json file called 
+  # wood_fiber_data.json in the data-folder
+  
   data_wood_fiber_URL <- "http://gis-gfw.wri.org/arcgis/rest/services/country_data/asia/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
   
   if(!file.exists('data/wood_fiber_data')){
@@ -42,8 +35,11 @@ download_wood_fiber_concessions <- function(){
 }
 
 
-# Download the oil palm concession data
 download_oil_palm_concessions <- function(){
+  # Download the concessions of oil palms. 
+  # only execute the download if the data is not downloaded yet. 
+  # Requires no input, the output is a json file called 
+  # palm_tree_concessions.json in the data-folder
   data_oil_palm_URL <- 'https://hub.arcgis.com/api/v3/datasets/f82b539b9b2f495e853670ddc3f0ce68_2/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1'
   
   if(!file.exists('data/oil_palm_data')){
@@ -51,5 +47,4 @@ download_oil_palm_concessions <- function(){
   }
 }
 
-# Forest loss dataset in MS Teams
-# Oil palm dataset? 
+
