@@ -50,7 +50,7 @@ The file names are:
  * west_kalimantan_forest_loss_year.tif
  
 After downloading, you should place these files in the data folder. 
-The data folder is created in the main.R, so you can only put the downloaded files in there after you run the first part of the main script.
+The data folder is created in the main.R, so you can only put the downloaded files in there after you run the first part of the main script that creates the necessary directories.
 
 ## Install necessary packages in R
 install.packages("sits")
