@@ -46,15 +46,24 @@ Statistics <- function (filtered_polygons_sf){
   total_area <- sum(filtered_polygons_sf$area_m2)
   mean_area <- mean(filtered_polygons_sf$area_m2)
   sd_area <- sd(filtered_polygons_sf$area_m2)
+  n_football_fields <- total_area / 7140
   
   # Print statistics 
-  cat("Number of polygons:", n_polygons, "\n")
-  cat("Total area (m²):", total_area, "\n")
-  cat("Mean polygon area (m²):", mean_area, "\n")
-  cat("Standard deviation of polygon area (m²):", sd_area, "\n")
-  cat ("Number of football fields:", total_area/7140, "\n")
+  # cat("Number of polygons:", n_polygons, "\n")
+  # cat("Total area (m²):", total_area, "\n")
+  # cat("Mean polygon area (m²):", mean_area, "\n")
+  # cat("Standard deviation of polygon area (m²):", sd_area, "\n")
+  # cat ("Number of football fields:", total_area/7140, "\n")
   
-  return (n_polygons, total_area, mean_area, sd_area)
+  stats_df <- data.frame(
+    n_polygons = n_polygons,
+    total_area_m2 = total_area,
+    mean_area_m2 = mean_area,
+    sd_area_m2 = sd_area,
+    n_football_fields = n_football_fields
+  )
+  
+  return (stats_df)
 }
 
 
