@@ -13,6 +13,24 @@ source("R/downloadFiles.R")
 source("R/extent.R")
 source("R/Oil_Palm_Clipping.R")
 
+
+raster_data <- rast("data/ketapang_palm_2023_90.tif")
+extent_sf <- st_read("data/Kayong_boundary.geojson")
+print("Raster extent:")
+print(ext(raster_data))
+print("GeoJSON extent:")
+print(st_bbox(extent_sf))
+
+
+
+print("Output raster extent:")
+print(ext(oil_palm_plantations_clipped))
+
+
+extent_vect <- vect(extent)
+print("SpatVector extent:")
+print(ext(extent_vect))
+
 # Download the official extent of the Kayong Regency (ROI)
 download_and_extract_Kayong()
 extent <- "data/Kayong_boundary.geojson"
@@ -25,13 +43,14 @@ download_oil_palm_concessions()
 oil_palm_concessions <- "data/palm_tree_concessions.json"
 
 # Download the oil palm plantations
-oil_palm_plantations <- rast("data/ketapang_palm_2023_90.tif")
+oil_palm_plantations <- "data/ketapang_palm_2023_90.tif"
 
 # Limit areas of datasets to the extent
 wood_fiber_clipped <- createExtent(wood_fiber_data, extent)
 oil_palm_concessions_clipped <- createExtent(oil_palm_concessions, extent)
 oil_palm_plantations_clipped <- createExtent(oil_palm_plantations, extent)
 
+plot(oil_palm_plantations_clipped)
 
 ### OIL PALM ###
 mismatches_oil_palm <- Identify_mismatch_polygons(oil_palm_plantations_clipped, oil_palm_concessions_clipped)
