@@ -38,44 +38,14 @@ plot(oil_palm_plantations_clipped)
 mismatches_oil_palm <- Identify_mismatch_polygons(oil_palm_plantations_clipped, oil_palm_concessions_clipped)
 stats_oil_palm <- Statistics(mismatches_oil_palm)
 
+### TIMBER ###
 
 
-
-
-
-# Identifying mismatches between concessions and plantations
-mismatches <- mask(plantations_clipped, concessions_clipped, inverse = TRUE)
-mismatches_polygons <- as.polygons(mismatches)
-
-# If mismatches_polygons is terra SpatVector, convert to sf-object and cast to
-# singlepart polygons
-polygons_sf <- st_as_sf(mismatches_polygons)
-polygons_sf <- st_cast(polygons_sf, "POLYGON")
-
-# Calculate area in square meters
-polygons_sf$area_m2 <- as.numeric(st_area(polygons_sf))
-
-# Filter polygons with area >= 10000 m² (100 pixels)
-filtered_polygons_sf <- polygons_sf[polygons_sf$area_m2 >= 10000, ]
-
-#General statistics, respectively: nr. of polygons, total area (m²), 
-#mean area (m²), standard deviation of area (m²)
-n_polygons <- nrow(filtered_polygons_sf)
-total_area <- sum(filtered_polygons_sf$area_m2)
-mean_area <- mean(filtered_polygons_sf$area_m2)
-sd_area <- sd(filtered_polygons_sf$area_m2)
-
-# Statistics
-cat("Number of polygons:", n_polygons, "\n")
-cat("Total area (m²):", total_area, "\n")
-cat("Mean polygon area (m²):", mean_area, "\n")
-cat("Standard deviation of polygon area (m²):", sd_area, "\n")
-cat ("Number of football fields:", total_area/7140, "\n")
 
 
 ###
 ###
-###
+
 #potentially use/remove
 # Write GeoJSON of filtered polygons
 st_write(filtered_polygons_sf, "output/filtered_polygons_oilpalm.geojson")
