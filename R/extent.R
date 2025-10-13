@@ -11,10 +11,10 @@ load_if_path <- function(input) {
   # an object. 
   if (is.character(input)) {
     # Check file extension to determine if it's a raster or vector
-    ext <- tolower(tools::file_ext(input))
+    ext <- tools::file_ext(input)
     message(sprintf("Reading file from: %s", input))
     if (ext %in% c("tif", "tiff")) {
-      return(terra::rast(input))
+      return(rast(input))
     } else {
       return(st_read(input, quiet = TRUE))
     }
@@ -33,8 +33,6 @@ createExtent <- function(data, extent, output_path = NULL) {
   #   extent: file of vector extent (e.g. .geojson)
   #   output_path: optional entry for location the output must be saved to
   # Returns: cropped data as an sf-object or spatraster-object
-  
-
   
   # Load data and extent if they are file paths
   data <- load_if_path(data)
@@ -79,7 +77,8 @@ createExtent <- function(data, extent, output_path = NULL) {
     }
     
     # Crop raster to extent
-    cropped_data <- mask(data, extent_vect)
+    cropped_data <- crop(data, extent_vect)
+    cropped_data <- mask(cropped_data, extent_vect)
     
     # Save cropped raster if output_path is provided and file does not exist
     if (!is.null(output_path)) {
