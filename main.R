@@ -13,10 +13,11 @@ source("R/downloadFiles.R")
 source("R/extent.R")
 source("R/Oil_Palm_Clipping.R")
 
-# Download the official timber and oil palm concession data 
+# Download the official extent of Kayong Regency (ROI)
 download_and_extract_Kayong()
 extent <- "data/Kayong_boundary.geojson"
 
+# Download the official timber and oil palm concession data 
 download_wood_fiber_concessions()
 wood_fiber_data = "data/wood_fiber_data.json"
 
