@@ -20,8 +20,6 @@ Identify_mismatch_polygons <- function(commodities_clipped, concessions_clipped)
   # (e.g. the concessions of oil palm with implemented extent).
   
   sf_use_s2(FALSE)
-  #spatvector <- vect(extent)
-  #commodities_clipped <- mask(commodities, spatvector)
   
   # Identifying mismatches between concessions and commodoties
   mismatches <- mask(commodities_clipped, concessions_clipped, inverse = TRUE)
