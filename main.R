@@ -13,19 +13,21 @@ source("R/downloadFiles.R")
 source("R/extent.R")
 source("R/Oil_Palm_Clipping.R")
 
-# Download the official extent of Kayong Regency (ROI)
+# Download the official extent of the Kayong Regency (ROI)
 download_and_extract_Kayong()
 extent <- "data/Kayong_boundary.geojson"
 
-# Download the official timber and oil palm concession data 
+# Download the official timber and oil palm concession data
 download_wood_fiber_concessions()
 wood_fiber_data = "data/wood_fiber_data.json"
 
 download_oil_palm_concessions()
 oil_palm_concessions <- "data/palm_tree_concessions.json"
+
+# Download the oil palm plantations
 oil_palm_plantations <- rast("data/ketapang_palm_2023_90.tif")
 
-# Limit areas of dataset to the extent
+# Limit areas of datasets to the extent
 wood_fiber_clipped <- createExtent(wood_fiber_data, extent)
 oil_palm_concessions_clipped <- createExtent(oil_palm_concessions, extent)
 oil_palm_plantations_clipped <- createExtent(oil_palm_plantations, extent)
