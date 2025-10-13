@@ -11,25 +11,7 @@ if(!dir.exists("output")){dir.create("output")}
 # Source the download function
 source("R/downloadFiles.R")
 source("R/extent.R")
-source("R/Oil_Palm_Clipping.R")
-
-
-raster_data <- rast("data/ketapang_palm_2023_90.tif")
-extent_sf <- st_read("data/Kayong_boundary.geojson")
-print("Raster extent:")
-print(ext(raster_data))
-print("GeoJSON extent:")
-print(st_bbox(extent_sf))
-
-
-
-print("Output raster extent:")
-print(ext(oil_palm_plantations_clipped))
-
-
-extent_vect <- vect(extent)
-print("SpatVector extent:")
-print(ext(extent_vect))
+source("R/identifyMismatches.R")
 
 # Download the official extent of the Kayong Regency (ROI)
 download_and_extract_Kayong()
