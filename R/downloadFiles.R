@@ -39,7 +39,7 @@ download_and_extract_Kayong <- function() {
     file.remove(temp_file)
   }
 }
-
+#
 download_wood_fiber_concessions <- function(){
   # Download the concessions of wood fiber. 
   # only execute the download if the data is not downloaded yet. 
