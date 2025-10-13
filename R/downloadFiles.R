@@ -10,16 +10,35 @@ download_and_extract_Kayong <- function() {
   # Requires no input, the output is a geojson file called 
   # Kayong_boundary.geojson in the data-folder
   
-  # Define URL and destination path
+  # Define URL and destination paths
   adm2_URL <- 'https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/IDN/ADM2/geoBoundaries-IDN-ADM2_simplified.geojson'
   dest_folder <- "data"
+  temp_folder <- "tempfiles"
+  temp_file <- file.path(temp_folder, "IDN_ADM2.geojson")
   outputfile <- file.path(dest_folder, "Kayong_boundary.geojson")
   
-  if(!file.exists('data/Kayong_boundary.geojson')){
-    download.file(url = adm2_URL, "data/Kayong_boundary.geojson", mode = "wb")
+  # Create folders if they don't exist
+  if (!dir.exists(dest_folder)) dir.create(dest_folder, recursive = TRUE)
+  if (!dir.exists(temp_folder)) dir.create(temp_folder, recursive = TRUE)
+  
+  # Check if file exists already
+  if (!file.exists(outputfile)) {
+    # Download the full ADM2 geojson if needed
+    download.file(url = adm2_URL, destfile = temp_file, mode = "wb")
+    
+    # Read the full ADM2 .geojson
+    indonesia_adm2 <- sf::st_read(temp_file, quiet = TRUE)
+    
+    # Filter to Kayong Utara only
+    kayong_utara <- indonesia_adm2[indonesia_adm2$shapeName == "Kayong Utara", ]
+    
+    # Save filtered data to output file
+    sf::st_write(kayong_utara, outputfile, driver = "GeoJSON", delete_dsn = TRUE)
+    
+    # Delete the temp ADM2 file to clean up
+    file.remove(temp_file)
   }
 }
-
 
 download_wood_fiber_concessions <- function(){
   # Download the concessions of wood fiber. 
@@ -33,7 +52,6 @@ download_wood_fiber_concessions <- function(){
     download.file(url = data_wood_fiber_URL, "data/wood_fiber_data.json")
   }
 }
-
 
 download_oil_palm_concessions <- function(){
   # Download the concessions of oil palms. 
