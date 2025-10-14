@@ -46,7 +46,7 @@ We downloaded these data sets and prepared them on MS Teams (under Files tab).
 To be able to run the main script, you must download the following files first. 
 The file names are:
  * ketapang_palm_2023_90.tif
- * managed_forst_data.zip
+ * managed_forest_data.zip
  * west_kalimantan_forest_loss.tif
  * west_kalimantan_forest_loss_year.tif
  
@@ -76,6 +76,8 @@ The code was created by the Bali starlings team, consisting of:
 The project is distributed under the MIT license, more information on the license can be found in the LICENSE.txt file.
 
 ## Contacts
+If you have any questions you can contact the following email address: 
+joelle@dontcontactme.gmail.com
 
 ## Acknowledgements 
 The original idea for this project came from Space4Good. This company is among other things involved in deforestation monitoring for various Indonesian entities.
