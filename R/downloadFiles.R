@@ -1,10 +1,10 @@
 ## File for downloading necessary datasets
 
 # Function that downloads the second administration level of Indonesia, 
-# extracting the boundary of Kayong Utara (a single regency) as output.
+# extracting the boundary of Kayong Utara regency (our ROI) as output.
 # Only executes the download, if the data is not downloaded already.
 # Requires no input, the output is a .geojson file called 
-# "Kayong_boundary.geojson" in the "data" directory.
+# "Kayong_boundary.geojson" stored in the "data" directory.
 
 download_and_extract_Kayong <- function(adm2_URL) {
   
@@ -33,10 +33,10 @@ download_and_extract_Kayong <- function(adm2_URL) {
   }
 }
 
-# Function that downloads the concessions of wood fiber,
+# Function that downloads the concessions for wood fiber,
 # only executes if the data is not downloaded yet. 
 # Requires no input, the output is a json file called 
-# "wood_fiber_data.json" in the "data" directory.
+# "wood_fiber_data.json" stored in the "data" directory.
 
 download_wood_fiber_concessions <- function(data_wood_fiber_URL){
   
@@ -48,7 +48,7 @@ download_wood_fiber_concessions <- function(data_wood_fiber_URL){
 # Function that downloads the concessions of oil palms, 
 # only executes the download if the data is not downloaded yet. 
 # Requires no input, the output is a json file called 
-# "palm_tree_concessions.json" in the "data" directory.
+# "palm_tree_concessions.json" stored in the "data" directory.
 
 download_oil_palm_concessions <- function(data_oil_palm_URL){
   
