@@ -3,7 +3,7 @@
 - Title: **Checking Timber Permit and Oil Palm Concession Boundaries with Remote Sensing in Indonesia**
 - Team name and members: **Bali Starlings; Jan Müldner, Joelle van Drie, Tosca Koeze, Pascal Dubbelman**
 - Challenge number (or "own"): **Challenge 1**
-- Description, how to run/reproduce:
+- Description, how to run/reproduce (see below "Usage")
 
 ## About the project
 The aim of our project is to construct reproducible code which will be able to identify discrepancies between legal concessions issued and open-source land cover/change maps for two major commodities managed in Indonesia: legal timber and oil palms. 
