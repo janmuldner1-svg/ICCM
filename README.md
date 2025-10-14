@@ -9,7 +9,7 @@
 The aim of our project is to construct reproducible code which will be able to identify discrepancies between legal concessions issued and open-source land cover/change maps for two major commodities managed in Indonesia: legal timber and oil palms. 
 Additionally, we assess the reality of the situation visually using remotely sensed imagery applied to the largest mismatches uncovered through our code.
 
-The following **table** will demonstrate the intended structure further, as it lists which types of data will be sourced for each commodity under each category.
+The following **table** demonstrates the intended structure further, as it lists which types of data are sourced for each commodity under each category.
 
 | **Commodity**               |  **Official concessions**   |       **Open source maps**       |         **Real-time RS imagery**           |
 | ---------------------------:| ---------------------------:| --------------------------------:| ------------------------------------------:|
