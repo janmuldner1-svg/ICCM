@@ -72,6 +72,20 @@ if (file.exists("output/timber_mismatches.geojson")) {
 
 # ===== UI =====
 ui <- fluidPage(
+  # Add CSS for more visible scale bar
+  tags$head(
+    tags$style(HTML("
+      .leaflet-control-scale {
+        background-color: white !important;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 0 8px rgba(0,0,0,0.2);
+      }
+    "))
+  ),
+  
   titlePanel("Commodity conccession mismatches - North Kayong Regency"),
   
   sidebarLayout(
@@ -126,7 +140,7 @@ server <- function(input, output, session) {
         position = "bottomright"
       ) %>%
       
-      # Scale bar
+      # Scale bar with default options but now styled via CSS above
       addScaleBar(position = "bottomleft", options = list(imperial = FALSE))
   })
   
@@ -205,6 +219,7 @@ server <- function(input, output, session) {
         )
     }
   })
+  
   # ===== TABLE OUTPUT =====
   output$layer_table <- renderTable({
     layers <- list()
@@ -247,4 +262,3 @@ server <- function(input, output, session) {
     do.call(rbind, layers)
   }, rownames = TRUE)
 }
-

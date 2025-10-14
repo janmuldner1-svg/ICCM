@@ -97,4 +97,4 @@ save_output(mismatches_wood, "timber_mismatches.geojson")
 # For visualization
 source("R/shiny.R")
 
-c
+shinyApp(ui = ui, server = server)
