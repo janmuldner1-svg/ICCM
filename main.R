@@ -18,15 +18,15 @@ source("R/merge_timber.R")
 unzip("data/managed_forest_data.zip", exdir = "data")
 
 # Download the official extent of the Kayong Regency (ROI)
-download_and_extract_Kayong()
+download_and_extract_Kayong("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/IDN/ADM2/geoBoundaries-IDN-ADM2_simplified.geojson")
 extent <- "data/Kayong_boundary.geojson"
 
 # Download the official timber and oil palm concession data
-download_wood_fiber_concessions()
+download_wood_fiber_concessions("http://gis-gfw.wri.org/arcgis/rest/services/country_data/asia/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json")
 wood_fiber_data = "data/wood_fiber_data.json"
 managed_forest_path <- "data/gfw_logging_download_v2020.shp"
 
-download_oil_palm_concessions()
+download_oil_palm_concessions("https://hub.arcgis.com/api/v3/datasets/f82b539b9b2f495e853670ddc3f0ce68_2/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1")
 oil_palm_concessions <- "data/palm_tree_concessions.json"
 
 # Download open source data for oil palm plantations and forest loss
