@@ -1,12 +1,14 @@
-# import packages
-library(sf)
-library(sits)
-library(terra)
+# Please follow the instructions in the README.md before running this script:)
 
 # Create necessary directories
 if(!dir.exists("tempfiles")){dir.create("tempfiles")}
 if(!dir.exists("data")){dir.create("data")}
 if(!dir.exists("output")){dir.create("output")}
+
+# import packages
+library(sf)
+library(sits)
+library(terra)
 
 # Source the download function
 source("R/downloadFiles.R")
