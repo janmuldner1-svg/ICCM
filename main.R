@@ -20,26 +20,23 @@ source("R/concessions_combined.R")
 source("R/saveOutput.R")
 source("R/statistics.R")
 
-# For visualization
-source("R/shiny.R")
-
 # Make sure the .zip file added from MS Teams gets unzipped
 unzip("data/managed_forest_data.zip", exdir = "data")
 
 # Download the official extent of the Kayong Regency (ROI)
 download_and_extract_Kayong("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/IDN/ADM2/geoBoundaries-IDN-ADM2_simplified.geojson")
-extent <- "data/Kayong_boundary.geojson"
+extent <- st_read("data/Kayong_boundary.geojson")
 
 # Download the official timber and oil palm concession data
 download_wood_fiber_concessions("http://gis-gfw.wri.org/arcgis/rest/services/country_data/asia/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json")
-wood_fiber_data = "data/wood_fiber_data.json"
-managed_forest_path <- "data/gfw_logging_download_v2020.shp"
+wood_fiber_data = st_read("data/wood_fiber_data.json")
+managed_forest_path <- st_read("data/gfw_logging_download_v2020.shp")
 
 download_oil_palm_concessions("https://hub.arcgis.com/api/v3/datasets/f82b539b9b2f495e853670ddc3f0ce68_2/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1")
-oil_palm_concessions <- "data/palm_tree_concessions.json"
+oil_palm_concessions <- st_read("data/palm_tree_concessions.json")
 
 # Download open source data for oil palm plantations and forest loss
-oil_palm_plantations <- "data/ketapang_palm_2023_90.tif"
+oil_palm_plantations <- rast("data/ketapang_palm_2023_90.tif")
 forest_loss <- rast("data/west_kalimantan_forest_loss_year.tif")
 # Select year 2019-2025 for forest loss
 forest_loss_2019_2024 <- ifel(forest_loss >= 19 & forest_loss <= 24, forest_loss, NA)
@@ -55,7 +52,7 @@ forest_loss_clipped <- createExtent(forest_loss_2019_2024, extent)
 # Combine all wood concession data
 combined_forest_concessions <-merge_timber(managed_forest_clipped, wood_fiber_clipped)
 
-# Combine oil and wood concession data
+# Combine oil palm and wood concession data
 combined_concessions <- concessions_combined(oil_palm_concessions_clipped, combined_forest_concessions)
 
 ### OIL PALM MISMATCHES ###
@@ -63,7 +60,7 @@ mismatches_oil_palm <- Identify_mismatch_polygons(oil_palm_plantations_clipped, 
 stats_oil_palm <- Statistics(mismatches_oil_palm)
 
 ### TIMBER MISMATCHES ###
-mismatches_wood <- Identify_mismatch_polygons(forest_loss_clipped, combined_forest_concessions)
+mismatches_wood <- Identify_mismatch_polygons(forest_loss_clipped, combined_concessions)
 stats_wood <- Statistics(mismatches_wood)
 
 ### STORE RESULTS ###
@@ -84,6 +81,8 @@ print("The results were saved into /output directory as .csv file")
 save_output(mismatches_oil_palm, "mismatches_oilpalm.geojson")
 save_output(oil_palm_concessions_clipped, "palm_tree_concessions_clipped.geojson", output_dir = "data")
 save_output(combined_forest_concessions, "forest_concessions.geojson", output_dir = "data")
+save_output(mismatches_oil_palm, "mismatches_oilpalm.geojson")
+save_output(mismatches_wood, "timber_mismatches.geojson")
 
 ###
 
@@ -95,4 +94,7 @@ save_output(combined_forest_concessions, "forest_concessions.geojson", output_di
 # st_write(combined_forest_concessions, "data/forest_concessions.geojson")
 
 # ===== RUN SHINY APP =====
-shinyApp(ui = ui, server = server)
+# For visualization
+source("R/shiny.R")
+
+c

@@ -48,7 +48,6 @@ To be able to run the main script, download them following these three steps:
 1. Download the files with the following names from MS Teams to your computer:
  * ketapang_palm_2023_90.tif
  * managed_forest_data.zip
- * west_kalimantan_forest_loss.tif
  * west_kalimantan_forest_loss_year.tif
 
 2. Run the very first part of the main.R, so that the correct directories are created
