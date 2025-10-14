@@ -33,9 +33,10 @@ Identify_mismatch_polygons <- function(commodities_clipped, concessions_clipped)
 }
 
 Statistics <- function (filtered_polygons_sf){
-  #General statistics, gives respectively: nr. of polygons, total area (m²), 
-  #mean area (m²), standard deviation of area (m²). Requires the data with
-  # filtered polygons as an sf object as input. 
+  #General statistics, calculates respectively: nr. of polygons, total area (m²), 
+  #mean area (m²), standard deviation of area (m²), and puts this (respectively) 
+  #into a dataframe where m² is converted to km². Requires the data with
+  #filtered polygons as an sf object as input. 
   n_polygons <- nrow(filtered_polygons_sf)
   total_area <- sum(filtered_polygons_sf$area_m2)
   mean_area <- mean(filtered_polygons_sf$area_m2)
@@ -44,9 +45,9 @@ Statistics <- function (filtered_polygons_sf){
   
   stats_df <- data.frame(
     n_polygons = n_polygons,
-    total_area_m2 = total_area,
-    mean_area_m2 = mean_area,
-    sd_area_m2 = sd_area,
+    total_area_km2 = total_area/1000000,
+    mean_area_km2 = mean_area/1000000,
+    sd_area_km2 = sd_area/1000000,
     n_football_fields = n_football_fields
   )
   
