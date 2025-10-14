@@ -14,6 +14,9 @@ source("R/extent.R")
 source("R/identifyMismatches.R")
 source("R/merge_timber.R")
 
+# Make sure the .zip file added from MS Teams gets unzipped
+unzip("data/managed_forest_data.zip", exdir = "data")
+
 # Download the official extent of the Kayong Regency (ROI)
 download_and_extract_Kayong()
 extent <- "data/Kayong_boundary.geojson"
@@ -51,7 +54,21 @@ stats_oil_palm <- Statistics(mismatches_oil_palm)
 mismatches_wood <- Identify_mismatch_polygons(forest_loss_clipped, combined_forest_concessions)
 stats_wood <- Statistics(mismatches_wood)
 
-###
+### STORE RESULTS ###
+
+## Store the statistical results as .csv files ##
+
+#  Stats for oil palms
+write.csv(stats_oil_palm, file = "output/stats_oil_palm.csv", row.names = FALSE)
+
+# Stats for timber
+write.csv(stats_wood, file = "output/stats_timber.csv", row.names = FALSE)
+
+print("The results were saved into /output directory as .csv file")
+
+## Store the mismatches as .json files into output ##
+
+
 ###
 
 #potentially use/remove
