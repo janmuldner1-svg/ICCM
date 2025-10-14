@@ -15,6 +15,8 @@ source("R/downloadFiles.R")
 source("R/extent.R")
 source("R/identifyMismatches.R")
 source("R/merge_timber.R")
+source("R/concessions_combined.R")
+source("R/shiny.R")
 
 # Make sure the .zip file added from MS Teams gets unzipped
 unzip("data/managed_forest_data.zip", exdir = "data")
@@ -48,6 +50,9 @@ forest_loss_clipped <- createExtent(forest_loss_2019_2024, extent)
 # Combine all wood concession data
 combined_forest_concessions <-merge_timber(managed_forest_clipped, wood_fiber_clipped)
 
+# Combine oil and wood concession data
+combined_concessions <- concessions_combined(oil_palm_concessions_clipped, combined_forest_concessions)
+
 ### OIL PALM MISMATCHES ###
 mismatches_oil_palm <- Identify_mismatch_polygons(oil_palm_plantations_clipped, oil_palm_concessions_clipped)
 stats_oil_palm <- Statistics(mismatches_oil_palm)
@@ -77,4 +82,5 @@ print("The results were saved into /output directory as .csv file")
 # Write GeoJSON of filtered polygons
 st_write(filtered_polygons_sf, "output/filtered_polygons_oilpalm.geojson")
 
-
+# ===== RUN SHINY APP =====
+shinyApp(ui = ui, server = server)
