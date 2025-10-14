@@ -4,11 +4,11 @@
 library(sf)
 library(dplyr)
 
+# Function that downloads the second administration level of Indonesia, only extracting the boundary of Kayong Utara as output
+# Only executes the download, if the data is not downloaded already.
+# Requires no input, the output is a .geojson file called Kayong_boundary.geojson in the "data" directory.
+
 download_and_extract_Kayong <- function() {
-  # Download the boundaries of Kayong Utara regency as extent (project ROI), 
-  # only execute the download if the data is not downloaded yet. 
-  # Requires no input, the output is a geojson file called 
-  # Kayong_boundary.geojson in the data-folder
   
   # Define URL and destination paths
   adm2_URL <- 'https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/IDN/ADM2/geoBoundaries-IDN-ADM2_simplified.geojson'
@@ -16,10 +16,6 @@ download_and_extract_Kayong <- function() {
   temp_folder <- "tempfiles"
   temp_file <- file.path(temp_folder, "IDN_ADM2.geojson")
   outputfile <- file.path(dest_folder, "Kayong_boundary.geojson")
-  
-  # Create folders if they don't exist
-  if (!dir.exists(dest_folder)) dir.create(dest_folder, recursive = TRUE)
-  if (!dir.exists(temp_folder)) dir.create(temp_folder, recursive = TRUE)
   
   # Check if file exists already
   if (!file.exists(outputfile)) {
@@ -39,12 +35,11 @@ download_and_extract_Kayong <- function() {
     file.remove(temp_file)
   }
 }
-#
+
+# Function that downloads the concessions of wood fiber (only executes if the data is not downloaded yet). 
+# Requires no input, the output is a json file called wood_fiber_data.json in the "data" directory.
+
 download_wood_fiber_concessions <- function(){
-  # Download the concessions of wood fiber. 
-  # only execute the download if the data is not downloaded yet. 
-  # Requires no input, the output is a json file called 
-  # wood_fiber_data.json in the data-folder
   
   data_wood_fiber_URL <- "http://gis-gfw.wri.org/arcgis/rest/services/country_data/asia/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
   
@@ -53,11 +48,11 @@ download_wood_fiber_concessions <- function(){
   }
 }
 
+# Function that downloads the concessions of oil palms (only executes the download if the data is not downloaded yet). 
+# Requires no input, the output is a json file called palm_tree_concessions.json in the "data" directory.
+
 download_oil_palm_concessions <- function(){
-  # Download the concessions of oil palms. 
-  # only execute the download if the data is not downloaded yet. 
-  # Requires no input, the output is a json file called 
-  # palm_tree_concessions.json in the data-folder
+
   data_oil_palm_URL <- 'https://hub.arcgis.com/api/v3/datasets/f82b539b9b2f495e853670ddc3f0ce68_2/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1'
   
   if(!file.exists('data/oil_palm_data')){
