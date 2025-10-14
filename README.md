@@ -40,9 +40,9 @@ cd Project_Starter-Bali_Starlings (in terminal)
 or use the setwd() function in R
 
 ### Download data from MS Teams 
-There are a few data sets for which we did not have a download link. 
-We downloaded these data sets and put them on MS Teams. 
-To be able to run the main script, you should download these files first. 
+There are a few data sets which could not be acquired through a URL link within the code, either due to size, or accessibility.
+We downloaded these data sets and prepared them on MS Teams (under Files tab).
+To be able to run the main script, you must download the following files first. 
 The file names are:
  * ketapang_palm_2023_90.tif
  * managed_forst_data.zip
@@ -50,7 +50,7 @@ The file names are:
  * west_kalimantan_forest_loss_year.tif
  
 After downloading, you should place these files in the data folder. 
-The data folder is created in the main.R, so you can only put the downloaded files in there after you run the first part of the main script that creates the necessary directories.
+The data folder is created in the main.R, so you can only put the downloaded files in there **after** you run the first part of the main script that creates the necessary directories.
 
 ## Install necessary packages in R
 install.packages("sits")
