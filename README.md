@@ -43,26 +43,35 @@ or use the setwd() function in R
 ### Download data from MS Teams 
 There are a few data sets which could not be acquired through a URL link within the code, either due to size, or accessibility.
 We downloaded these data sets and prepared them on MS Teams (under Files tab).
-To be able to run the main script, you must download the following files first. 
-The file names are:
+To be able to run the main script, download them following these three steps:
+
+1. Download the files with the following names from MS Teams to your computer:
  * ketapang_palm_2023_90.tif
  * managed_forest_data.zip
  * west_kalimantan_forest_loss.tif
  * west_kalimantan_forest_loss_year.tif
- 
-After downloading, you should place these files in the data folder. 
-The data folder is created in the main.R, so you can only put the downloaded files in there **after** you run the first part of the main script that creates the necessary directories.
+
+2. Run the very first part of the main.R, so that the correct directories are created
+(Lines 4, 5, 6, titled "# Create necessary directories")
+
+3. Move the files you downloaded into the "data" directory
+
+Now, all necessary data will be ready in "data" for when the full main.R is run later on (see below).
 
 ## Install necessary packages in R
-install.packages("sits")
 install.packages("sf")
 install.packages("terra")
 install.packages("dplyr")
+install.packages("shiny")
+install.packages("leaflet")
  
 ## Usage
-Run the main.R file 
+Run the full main.R file. The script was developed in RStudio, so we recommend using it as the default IDE. The following should happen as result:
+- The mismatches identified by the script will be stored as .json files (as polygons) in the "output" directory.
+- The statistical results will be stored as a .csv file with two rows, one for each commodity, in the "output" directory.
+- A window will pop up with the Shiny Web Application with a box suggesting "open in Browser". Click on it and an interactive, visual map should open up.
 
-explain the output of the main.R file and include some examples (screenshots of maps/ouput)
+A few examples/screenshots of output may be found below:
 
 
 ## Contributing
@@ -75,15 +84,15 @@ The code was created by the Bali starlings team, consisting of:
 ## License
 The project is distributed under the MIT license, more information on the license can be found in the LICENSE.txt file.
 
-## Contacts
-If you have any questions you can contact the following email address: 
-joelle@dontcontactme.gmail.com
-
 ## Acknowledgements 
 The original idea for this project came from Space4Good. This company is among other things involved in deforestation monitoring for various Indonesian entities.
 Throughout the creation of this project we were in contact with Ramadhan from Space4Good, whom provided us with very helpful feedback.
 
-This project was created by students from Wageningen University and Research during the course Geoscripting. 
+This short-term project was created by students of Wageningen University and Research under the course Geoscripting. 
+
+## Contacts
+If you have any questions, you can contact the following email address: 
+joelle@dontcontactme.gmail.com
 
 
 
