@@ -1,24 +1,21 @@
-# Install and load required packages
-install.packages("sf")
+# File to merge the managed forest data set and the wood fiber data set into one timber concession file
+
+# Packages 
 library(sf)
 
-# Source the extent and download function
-source("R/extent.R")
-source("R/downloadFiles.R")
+merge_timber <- function(managed_forest_clipped, wood_fiber_clipped){
+  # Function to combine the wood fiber and managed forest data into one timber concessions file
+  # Only writes the combined timber concessions to file if it does not already exist
+  # Accepts a spatial raster, spatial vector, spatial raster data set or spatial vector collection as input
+  # Returns the combined timber concessions as a .geojson file
+  
+  # Combine the two cropped spatial datasets using rbind()
+  combined_concessions <- rbind(managed_forest_clipped, wood_fiber_clipped)
+  
+  # Write the combined GeoJSON to file if it does not already exist
+  if(!file.exists("data/timber_concessions.geojson")){
+  st_write(combined_concessions, "data/timber_concessions.geojson", driver = "GeoJSON", delete_dsn = TRUE)
+  }
+}
 
-# Create extent variable
-extent <- download_and_extract_Kayong()
 
-# File paths
-managed_forest_path <- "data/gfw_logging_download_v2020.shp"
-wood_fiber_path <- "data/wood_fiber_data.json"
-
-# Crop the managed forest and wood fiber data to the extent of the study area
-managed_forest_crop <- createExtent(managed_forest_path, extent)
-wood_fiber_crop <- createExtent(wood_fiber_path, extent)
-
-# Combine the two cropped spatial datasets using rbind()
-combined_concessions <- rbind(managed_forest_crop, wood_fiber_crop)
-
-# Write the combined GeoJSON to file
-st_write(combined_concessions, "data/timber_concessions.geojson", driver = "GeoJSON", delete_dsn = TRUE)
