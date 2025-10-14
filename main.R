@@ -80,7 +80,9 @@ print("The results were saved into /output directory as .csv file")
 
 #potentially use/remove
 # Write GeoJSON of filtered polygons
-st_write(filtered_polygons_sf, "output/filtered_polygons_oilpalm.geojson")
+st_write(mismatches_oil_palm, "output/mismatches_oilpalm.geojson")
+st_write(oil_palm_concessions_clipped, "data/palm_tree_concessions_clipped.geojson")
+st_write(combined_forest_concessions, "data/forest_concessions.geojson")
 
 # ===== RUN SHINY APP =====
 shinyApp(ui = ui, server = server)
