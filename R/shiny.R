@@ -72,10 +72,23 @@ if (file.exists("output/timber_mismatches.geojson")) {
 
 # ===== UI =====
 ui <- fluidPage(
-  titlePanel("Land Use Map - North Kayong Regency"),
+  titlePanel("Commodity conccession mismatches - North Kayong Regency"),
   
   sidebarLayout(
     sidebarPanel(
+      tags$div(
+        style = "margin-bottom:20px;",
+        HTML("<h4>About this map</h4>
+              <p>This interactive map displays concession mismatches for oil palm and timber commodities for the North Kayong Regency in West Kalimantan, Indonesia. You can toggle layers to explore:</p>
+              <ul>
+                <li><b>Palm Mismatches</b>: Areas where oil palms are cultivated outside of designated concession zones.</li>
+                <li><b>Timber Mismatches</b>: Areas with noticeable forest loss outside of managed/ wood fiber concessions.</li>
+                <li><b>Forest Concessions</b>: The 'Timber concessions' data set is a merged dataset of the Managed Forests (MF) and Wood Fiber (WF) concessions obtained from Global Forest Watch, last updated in 2023 and 2019 respectively. It refers to areas allocated by a government for harvesting timber and other wood products in a public forest, as well as areas issued locally for the exclusive production of pulp and paper products.</li>
+                <li><b>Palm Concessions</b>: The 'Oil palm concessions' data set is obtained from Global Forest Watch, last updated in 2023. It refers to areas with current or planned oil palm plantations in Indonesia..</li>
+                <li><b>Kayong Boundary</b>: Administrative boundary of the region.</li>
+              </ul>
+              <p>Use the checkboxes below to toggle layers on the map.</p>")
+      ),
       checkboxGroupInput(
         "layer",
         "Layers:",
@@ -192,7 +205,46 @@ server <- function(input, output, session) {
         )
     }
   })
+  # ===== TABLE OUTPUT =====
+  output$layer_table <- renderTable({
+    layers <- list()
+    
+    if ("Palm Mismatches" %in% input$layer && !is.null(concessions)) {
+      layers[["Palm Mismatches"]] <- data.frame(
+        Features = nrow(concessions),
+        Area_km2 = round(sum(concessions$area_m2, na.rm = TRUE) / 1e6, 2)
+      )
+    }
+    
+    if ("Timber Mismatches" %in% input$layer && !is.null(timber_mismatches)) {
+      layers[["Timber Mismatches"]] <- data.frame(
+        Features = nrow(timber_mismatches),
+        Area_km2 = round(sum(timber_mismatches$area_m2, na.rm = TRUE) / 1e6, 2)
+      )
+    }
+    
+    if ("Forest Concessions" %in% input$layer && !is.null(forest_concessions)) {
+      layers[["Forest Concessions"]] <- data.frame(
+        Features = nrow(forest_concessions),
+        Area_km2 = round(sum(forest_concessions$area_m2, na.rm = TRUE) / 1e6, 2)
+      )
+    }
+    
+    if ("Palm Concessions" %in% input$layer && !is.null(palm_concessions)) {
+      layers[["Palm Concessions"]] <- data.frame(
+        Features = nrow(palm_concessions),
+        Area_km2 = round(sum(palm_concessions$shape_Area, na.rm = TRUE) / 1e6, 2)
+      )
+    }
+    
+    if ("Kayong Boundary" %in% input$layer && !is.null(kayong_boundary)) {
+      layers[["Kayong Boundary"]] <- data.frame(
+        Features = nrow(kayong_boundary),
+        Area_km2 = NA
+      )
+    }
+    
+    do.call(rbind, layers)
+  }, rownames = TRUE)
 }
 
-# ===== RUN APP =====
-shinyApp(ui = ui, server = server)

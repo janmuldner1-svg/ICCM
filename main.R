@@ -16,6 +16,8 @@ source("R/extent.R")
 source("R/identifyMismatches.R")
 source("R/merge_timber.R")
 source("R/concessions_combined.R")
+
+# For visualization
 source("R/shiny.R")
 
 # Make sure the .zip file added from MS Teams gets unzipped
