@@ -103,13 +103,13 @@ server <- function(input, output, session) {
       # Custom HTML legend
       addControl(
         html = "<div style='background:white;padding:10px;border-radius:5px;font-size:16px;'>
-            <b>Legend</b><br>
-            <span style='color:red;'>■</span> Palm Mismatches<br>
-            <span style='color:orange;'>■</span> Timber Mismatches<br>
-            <span style='color:blue;'>■</span> Forest Concessions<br>
-            <span style='color:yellow;'>■</span> Palm Concessions<br>
-            <span style='color:purple;'>■</span> Kayong Boundary
-          </div>",
+                  <b>Legend</b><br>
+                  <span style='color:red;'>■</span> Palm Mismatches<br>
+                  <span style='color:orange;'>■</span> Timber Mismatches<br>
+                  <span style='color:blue;'>■</span> Forest Concessions<br>
+                  <span style='color:yellow;'>■</span> Palm Concessions<br>
+                  <span style='color:purple;'>■</span> Kayong Boundary
+                </div>",
         position = "bottomright"
       ) %>%
       
@@ -193,3 +193,6 @@ server <- function(input, output, session) {
     }
   })
 }
+
+# ===== RUN APP =====
+shinyApp(ui = ui, server = server)
