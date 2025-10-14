@@ -7,15 +7,18 @@ if(!dir.exists("output")){dir.create("output")}
 
 # import packages
 library(sf)
-library(sits)
+#library(sits)
 library(terra)
+library(dplyr)
 
-# Source the download function
+# Sources to load functions
 source("R/downloadFiles.R")
 source("R/extent.R")
 source("R/identifyMismatches.R")
 source("R/merge_timber.R")
 source("R/concessions_combined.R")
+source("R/saveOutput.R")
+source("R/statistics.R")
 
 # For visualization
 source("R/shiny.R")
@@ -68,23 +71,28 @@ stats_wood <- Statistics(mismatches_wood)
 ## Store the statistical results as .csv files ##
 
 #  Stats for oil palms
+save_output(stats_oil_palm, "stats_oil_palm.csv")
 write.csv(stats_oil_palm, file = "output/stats_oil_palm.csv", row.names = FALSE)
 
 # Stats for timber
+save_output(stats_wood, "stats_timber.csv")
 write.csv(stats_wood, file = "output/stats_timber.csv", row.names = FALSE)
 
 print("The results were saved into /output directory as .csv file")
 
-## Store the mismatches as .json files into output ##
-
+## Store the mismatches as .geojson files into output ##
+save_output(mismatches_oil_palm, "mismatches_oilpalm.geojson")
+save_output(oil_palm_concessions_clipped, "palm_tree_concessions_clipped.geojson", output_dir = "data")
+save_output(combined_forest_concessions, "forest_concessions.geojson", output_dir = "data")
 
 ###
 
 #potentially use/remove
 # Write GeoJSON of filtered polygons
-st_write(mismatches_oil_palm, "output/mismatches_oilpalm.geojson")
-st_write(oil_palm_concessions_clipped, "data/palm_tree_concessions_clipped.geojson")
-st_write(combined_forest_concessions, "data/forest_concessions.geojson")
+
+# st_write(mismatches_oil_palm, "output/mismatches_oilpalm.geojson")
+# st_write(oil_palm_concessions_clipped, "data/palm_tree_concessions_clipped.geojson")
+# st_write(combined_forest_concessions, "data/forest_concessions.geojson")
 
 # ===== RUN SHINY APP =====
 shinyApp(ui = ui, server = server)
