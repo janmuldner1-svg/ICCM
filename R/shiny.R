@@ -1,70 +1,98 @@
 library(shiny)
 library(leaflet)
 library(sf)
-library(base64enc)  # For base64 image encoding
+library(DT)
+library(base64enc)
 
-# ==== Load your spatial data ====
+# ==== Load spatial data ====
+concessions <- if (file.exists("output/mismatches_oilpalm.geojson")) {
+  st_read("output/mismatches_oilpalm.geojson") %>%
+    st_zm(drop = TRUE) %>%
+    { if (!all(st_is_valid(.))) st_make_valid(.) else . } %>%
+    { .$area_m2 <- as.numeric(.$area_m2 %||% st_area(.)); . }
+} else NULL
 
-concessions <- NULL
-palm_concessions <- NULL
-kayong_boundary <- NULL
-timber_mismatches <- NULL
-forest_concessions <- NULL
-biggest_oilpalm <- NULL
-biggest_timber <- NULL
+palm_concessions <- if (file.exists("data/palm_tree_concessions_clipped.geojson")) {
+  st_read("data/palm_tree_concessions_clipped.geojson") %>%
+    st_zm(drop = TRUE) %>%
+    { if (!all(st_is_valid(.))) st_make_valid(.) else . } %>%
+    { .$area_m2 <- as.numeric(.$shape_Area %||% st_area(.)); . }
+} else NULL
 
-if (file.exists("output/mismatches_oilpalm.geojson")) {
-  concessions <- st_read("output/mismatches_oilpalm.geojson")
-  concessions <- st_zm(concessions, drop = TRUE, what = "ZM")
-  if (!all(st_is_valid(concessions))) concessions <- st_make_valid(concessions)
-  concessions$area_m2 <- as.numeric(concessions$area_m2 %||% st_area(concessions))
-}
+forest_concessions <- if (file.exists("data/forest_concessions.geojson")) {
+  st_read("data/forest_concessions.geojson") %>%
+    st_zm(drop = TRUE) %>%
+    { if (!all(st_is_valid(.))) st_make_valid(.) else . } %>%
+    { .$area_m2 <- as.numeric(.$area_m2 %||% st_area(.)); . }
+} else NULL
 
-if (file.exists("data/palm_tree_concessions_clipped.geojson")) {
-  palm_concessions <- st_read("data/palm_tree_concessions_clipped.geojson")
-  palm_concessions <- st_zm(palm_concessions, drop = TRUE, what = "ZM")
-  if (!all(st_is_valid(palm_concessions))) palm_concessions <- st_make_valid(palm_concessions)
-  palm_concessions$shape_Area <- as.numeric(palm_concessions$shape_Area)
-}
+kayong_boundary <- if (file.exists("data/Kayong_boundary.geojson")) {
+  st_read("data/Kayong_boundary.geojson") %>%
+    st_zm(drop = TRUE) %>%
+    { if (!all(st_is_valid(.))) st_make_valid(.) else . }
+} else NULL
 
-if (file.exists("data/forest_concessions.geojson")) {
-  forest_concessions <- st_read("data/forest_concessions.geojson")
-  forest_concessions <- st_zm(forest_concessions, drop = TRUE, what = "ZM")
-  if (!all(st_is_valid(forest_concessions))) forest_concessions <- st_make_valid(forest_concessions)
-  forest_concessions$area_m2 <- as.numeric(forest_concessions$area_m2 %||% st_area(forest_concessions))
-}
+timber_mismatches <- if (file.exists("output/timber_mismatches.geojson")) {
+  st_read("output/timber_mismatches.geojson") %>%
+    st_zm(drop = TRUE) %>%
+    { if (!all(st_is_valid(.))) st_make_valid(.) else . } %>%
+    { .$area_m2 <- as.numeric(.$area_m2 %||% st_area(.)); . }
+} else NULL
 
-if (file.exists("data/Kayong_boundary.geojson")) {
-  kayong_boundary <- st_read("data/Kayong_boundary.geojson")
-  kayong_boundary <- st_zm(kayong_boundary, drop = TRUE, what = "ZM")
-  if (!all(st_is_valid(kayong_boundary))) kayong_boundary <- st_make_valid(kayong_boundary)
-}
+biggest_oilpalm <- if (file.exists("output/biggest_mismatches_oilpalm.geojson")) {
+  st_read("output/biggest_mismatches_oilpalm.geojson") %>%
+    st_zm(drop = TRUE) %>%
+    { if (!all(st_is_valid(.))) st_make_valid(.) else . } %>%
+    { .$area_m2 <- as.numeric(.$area_m2 %||% st_area(.)); . }
+} else NULL
 
-if (file.exists("output/timber_mismatches.geojson")) {
-  timber_mismatches <- st_read("output/timber_mismatches.geojson")
-  timber_mismatches <- st_zm(timber_mismatches, drop = TRUE, what = "ZM")
-  if (!all(st_is_valid(timber_mismatches))) timber_mismatches <- st_make_valid(timber_mismatches)
-  timber_mismatches$area_m2 <- as.numeric(timber_mismatches$area_m2 %||% st_area(timber_mismatches))
-}
+biggest_timber <- if (file.exists("output/biggest_timber_mismatches.geojson")) {
+  st_read("output/biggest_timber_mismatches.geojson") %>%
+    st_zm(drop = TRUE) %>%
+    { if (!all(st_is_valid(.))) st_make_valid(.) else . } %>%
+    { .$area_m2 <- as.numeric(.$area_m2 %||% st_area(.)); . }
+} else NULL
 
-if (file.exists("output/biggest_mismatches_oilpalm.geojson")) {
-  biggest_oilpalm <- st_read("output/biggest_mismatches_oilpalm.geojson")
-  biggest_oilpalm <- st_zm(biggest_oilpalm, drop = TRUE, what = "ZM")
-  if (!all(st_is_valid(biggest_oilpalm))) biggest_oilpalm <- st_make_valid(biggest_oilpalm)
-  biggest_oilpalm$area_m2 <- as.numeric(biggest_oilpalm$area_m2 %||% st_area(biggest_oilpalm))
-}
-
-if (file.exists("output/biggest_timber_mismatches.geojson")) {
-  biggest_timber <- st_read("output/biggest_timber_mismatches.geojson")
-  biggest_timber <- st_zm(biggest_timber, drop = TRUE, what = "ZM")
-  if (!all(st_is_valid(biggest_timber))) biggest_timber <- st_make_valid(biggest_timber)
-  biggest_timber$area_m2 <- as.numeric(biggest_timber$area_m2 %||% st_area(biggest_timber))
-}
-
-# === Base64 encode the north arrow image once globally ===
 img_base64 <- base64enc::dataURI(file = "www/north_arrow.png", mime = "image/png")
 
-# ==== UI ====
+ensure_area_m2 <- function(sf_obj) {
+  if (is.null(sf_obj$area_m2)) {
+    sf_obj$area_m2 <- as.numeric(st_area(sf_obj))
+  }
+  sf_obj
+}
+
+Statistics <- function(mismatch_sf, reference_sf = NULL) {
+  mismatch_sf <- ensure_area_m2(mismatch_sf)
+  if (!is.null(reference_sf)) {
+    reference_sf <- ensure_area_m2(reference_sf)
+  }
+  
+  n_polygons <- nrow(mismatch_sf)
+  total_area <- sum(mismatch_sf$area_m2, na.rm = TRUE)
+  mean_area <- mean(mismatch_sf$area_m2, na.rm = TRUE)
+  sd_area <- sd(mismatch_sf$area_m2, na.rm = TRUE)
+  n_football_fields <- total_area / 7140
+  
+  pct_mismatch <- NA
+  if (!is.null(reference_sf)) {
+    total_ref_area <- sum(reference_sf$area_m2, na.rm = TRUE)
+    if (total_ref_area > 0) {
+      pct_mismatch <- (total_area / total_ref_area) * 100
+    }
+  }
+  
+  # Round all numeric values to 2 decimals
+  data.frame(
+    "Number of Mismatches" = n_polygons,
+    "Total Mismatch Area (km²)" = round(total_area / 1e6, 2),
+    "Mean Mismatch Area (km²)" = round(mean_area / 1e6, 2),
+    "SD Mismatch Area (km²)" = round(sd_area / 1e6, 2),
+    "Football Field Equivalent" = round(n_football_fields, 2),
+    "Mismatch Area as part of Total Area in Percentage (%)" = round(pct_mismatch, 2)
+  )
+}
+
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
@@ -90,13 +118,13 @@ ui <- fluidPage(
               <ul>
                 <li><b>Palm Mismatches</b>: Areas where oil palms are cultivated outside of designated concession zones.</li>
                 <li><b>Timber Mismatches</b>: Areas with noticeable forest loss outside of managed/ wood fiber concessions.</li>
-                <li><b>Forest Concessions</b>: Managed forest areas for timber and wood fiber production.</li>
-                <li><b>Palm Concessions</b>: Areas with current or planned oil palm plantations.</li>
+                <li><b>Forest Concessions</b>: The 'Timber concessions' data set is a merged dataset of the Managed Forests (MF) and Wood Fiber (WF) concessions obtained from Global Forest Watch, last updated in 2023 and 2019 respectively. It refers to areas allocated by a government for harvesting timber and other wood products in a public forest, as well as areas issued locally for the exclusive production of pulp and paper products.</li>
+                <li><b>Palm Concessions</b>: The 'Oil palm concessions' data set is obtained from Global Forest Watch, last updated in 2023. It refers to areas with current or planned oil palm plantations in Indonesia.</li>
                 <li><b>Kayong Boundary</b>: Administrative boundary of the region.</li>
-                <li><b>Biggest Palm Mismatches</b>: 10 Largest palm mismatches in opaque red.</li>
-                <li><b>Biggest Timber Mismatches</b>: 10 Largest timber mismatches in opaque yellow.</li>
+                <li><b>Biggest Palm Mismatches</b>: Top 10 largest palm mismatches (opaque red).</li>
+                <li><b>Biggest Timber Mismatches</b>: Top 10 largest timber mismatches (opaque yellow).</li>
               </ul>
-              <p>Use the checkboxes below to toggle layers on the map.</p>")
+              <p>Use the checkboxes below to toggle layers on the map. Click on a region for more information.</p>")
       ),
       checkboxGroupInput(
         "layer",
@@ -113,29 +141,36 @@ ui <- fluidPage(
     
     mainPanel(
       leafletOutput("map", height = "700px"),
+      
+      conditionalPanel(
+        condition = "input.layer.includes('Palm Mismatches')",
+        h3("Statistics - Palm Mismatches"),
+        DTOutput("table_oil_palm"),
+        br()
+      ),
+      
+      conditionalPanel(
+        condition = "input.layer.includes('Timber Mismatches')",
+        h3("Statistics - Timber Mismatches"),
+        DTOutput("table_wood")
+      ),
+      
       width = 9
     )
   )
 )
 
-# ==== SERVER ====
 server <- function(input, output, session) {
   
   output$map <- renderLeaflet({
     leaflet() %>%
       addProviderTiles("Esri.WorldImagery") %>%
       setView(lng = 110.05, lat = -1.07, zoom = 11) %>%
-      
-      # Add scale bar (metric only) in bottom left
       addScaleBar(position = "bottomleft", options = list(imperial = FALSE)) %>%
-      
-      # Add the north arrow image control (top right)
       addControl(
         html = sprintf("<img src='%s' style='width:60px; opacity:0.8;'>", img_base64),
         position = "topright"
       ) %>%
-      
-      # Add static legend box bottom right
       addControl(
         html = "<div style='background:white;padding:10px;border-radius:5px;font-size:16px;box-shadow:0 0 8px rgba(0,0,0,0.2);'>
                   <b>Legend</b><br>
@@ -152,12 +187,10 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$layer, {
-    leafletProxy("map") %>%
-      clearShapes()
+    proxy <- leafletProxy("map") %>% clearShapes()
     
-    # Kayong Boundary (bottom layer)
     if ("Kayong Boundary" %in% input$layer && !is.null(kayong_boundary)) {
-      leafletProxy("map") %>%
+      proxy %>%
         addPolygons(
           data = kayong_boundary,
           fillColor = "transparent",
@@ -170,23 +203,21 @@ server <- function(input, output, session) {
         )
     }
     
-    # Palm Concessions
     if ("Palm Concessions" %in% input$layer && !is.null(palm_concessions)) {
-      leafletProxy("map") %>%
+      proxy %>%
         addPolygons(
           data = palm_concessions,
           fillColor = "yellow",
           fillOpacity = 0.3,
           color = "goldenrod",
           weight = 1,
-          popup = ~paste("Company:", company, "<br>Area (km²):", round(shape_Area / 1e6, 2)),
+          popup = ~paste("Company:", company, "<br>Area (km²):", round(area_m2 / 1e6, 2)),
           label = ~paste("Company:", company)
         )
     }
     
-    # Forest Concessions
     if ("Forest Concessions" %in% input$layer && !is.null(forest_concessions)) {
-      leafletProxy("map") %>%
+      proxy %>%
         addPolygons(
           data = forest_concessions,
           fillColor = "blue",
@@ -198,24 +229,21 @@ server <- function(input, output, session) {
         )
     }
     
-    # Timber Mismatches, with popup showing deforestation year from 'layer' column
     if ("Timber Mismatches" %in% input$layer && !is.null(timber_mismatches)) {
-      leafletProxy("map") %>%
+      proxy %>%
         addPolygons(
           data = timber_mismatches,
           fillColor = "orange",
           fillOpacity = 0.4,
           color = "darkorange",
           weight = 1,
-          popup = ~paste0("Area (km²): ", round(area_m2 / 1e6, 2),
-                          "<br>Deforestation Year: ", 2000 + as.numeric(layer)),
-          label = ~paste0("Year: ", 2000 + as.numeric(layer))
+          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
+          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
         )
     }
     
-    # Palm Mismatches (top layer)
     if ("Palm Mismatches" %in% input$layer && !is.null(concessions)) {
-      leafletProxy("map") %>%
+      proxy %>%
         addPolygons(
           data = concessions,
           fillColor = "red",
@@ -227,33 +255,43 @@ server <- function(input, output, session) {
         )
     }
     
-    # Biggest Palm Mismatches (same fill as Palm Mismatches but black border)
     if ("Biggest Palm Mismatches" %in% input$layer && !is.null(biggest_oilpalm)) {
-      leafletProxy("map") %>%
+      proxy %>%
         addPolygons(
           data = biggest_oilpalm,
           fillColor = "red",
           fillOpacity = 1,
-          color = "black",       # black border
+          color = "black",
           weight = 2,
           popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
           label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
         )
     }
     
-    # Biggest Timber Mismatches (same fill as Timber Mismatches but black border)
     if ("Biggest Timber Mismatches" %in% input$layer && !is.null(biggest_timber)) {
-      leafletProxy("map") %>%
+      proxy %>%
         addPolygons(
           data = biggest_timber,
           fillColor = "orange",
           fillOpacity = 1,
-          color = "black",       # black border
+          color = "black",
           weight = 2,
-          popup = ~paste0("Area (km²): ", round(area_m2 / 1e6, 2),
-                          "<br>Deforestation Year: ", 2000 + as.numeric(layer)),
-          label = ~paste0("Year: ", 2000 + as.numeric(layer))
+          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
+          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
         )
     }
   })
+  
+  output$table_oil_palm <- renderDT({
+    req(concessions, palm_concessions)
+    stats_oil_palm <- Statistics(concessions, palm_concessions)
+    datatable(stats_oil_palm, options = list(dom = 't', paging = FALSE), rownames = FALSE)
+  })
+  
+  output$table_wood <- renderDT({
+    req(timber_mismatches, forest_concessions)
+    stats_wood <- Statistics(timber_mismatches, forest_concessions)
+    datatable(stats_wood, options = list(dom = 't', paging = FALSE), rownames = FALSE)
+  })
+  
 }

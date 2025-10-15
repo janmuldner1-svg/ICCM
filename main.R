@@ -57,11 +57,11 @@ combined_concessions <- concessions_combined(oil_palm_concessions_clipped, combi
 
 ### OIL PALM MISMATCHES ###
 mismatches_oil_palm <- Identify_mismatch_polygons(oil_palm_plantations_clipped, oil_palm_concessions_clipped)
-stats_oil_palm <- Statistics(mismatches_oil_palm)
+stats_oil_palm <- Statistics(mismatches_oil_palm, oil_palm_concessions_clipped)
 
 ### TIMBER MISMATCHES ###
 mismatches_wood <- Identify_mismatch_polygons(forest_loss_clipped, combined_concessions)
-stats_wood <- Statistics(mismatches_wood)
+stats_wood <- Statistics(mismatches_wood, forest_loss_clipped)
 
 ### FIND BIGGEST MISMATCHES ###
 biggest_palm_mismatches <- get_largest_mismatches(mismatches_oil_palm)
