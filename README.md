@@ -1,33 +1,35 @@
 ## Geoscripting project repository.
 
-- Title: **Checking Timber Permit and Oil Palm Concession Boundaries with Remote Sensing in Indonesia**
+- Title: **Identifying Commodity Concession Mismatches in the North Kayong Regency of Indonesia**
+- Subtitle: Uncovering where forest cover loss and oil palm planting occur outside of designated concession areas using geo-data sets, scripting, and visualization
 - Team name and members: **Bali Starlings; Jan Müldner, Joelle van Drie, Tosca Koeze, Pascal Dubbelman**
-- Challenge number (or "own"): **Challenge 1**
-- Description, how to run/reproduce (see below "Usage")
+- Challenge number: **Challenge 1**
+- Description on how to run/reproduce can be found under ## Getting started
 
 ## About the project
-The aim of our project is to construct reproducible code which will be able to identify discrepancies between legal concessions issued and open-source land cover/change maps for two major commodities managed in Indonesia: legal timber and oil palms. 
-Additionally, we assess the reality of the situation visually using remotely sensed imagery applied to the largest mismatches uncovered through our code.
+The aim of our project is to construct reproducible code which will be able to identify discrepancies between legal concessions issued and open-source land cover/change maps for two major commodities managed in Indonesia: legal timber and oil palms, both crucial for habitat management & conservation efforts in Indonesia.
+In addition to identifying these mismatches and providing a quick statistical overview regarding their occurrence and extent; an interactive map is produced, allowing the user to visually engage with individual data sets and mismatches as optional layers.
 
-The following **table** demonstrates the intended structure further, as it lists which types of data are sourced for each commodity under each category.
+The objectives of the project are comparing open-source datasets, such as oil palm plantations as attributes of land cover maps, with official concession boundaries related to their legal planting (or, logging in terms of timber). To minimize extent and reach feasible data sizes, the project is focused on the North Kayong (Kayong Utara) regency of Kalimantan Island, Indonesia, which is defined as our **ROI**.The analyzed datasets are clipped to its extent through our script. Initially, we acquire concessions as polygon features (shapefiles, geojson files) for both commodities separately using data sets published by the Global Forest Watch (GFW). The oil palm concessions are available as a single data set, but for timber, the authorized areas of logging and wood management are divided into two categories. The first are Managed Forest concessions, downloaded from (GFW). They refer to areas allocated by a government for harvesting timber and other wood products in a public forest. The second are Wood Fiber concessions for Indonesia, which are issued locally for the exclusive production of pulp and paper products, also available from GFW. Both timber data sets are merged into one timber concessions data set with the merge_timber function.
 
-| **Commodity**               |  **Official concessions**   |       **Open source maps**       |         **Real-time RS imagery**           |
-| ---------------------------:| ---------------------------:| --------------------------------:| ------------------------------------------:|
-| **Timber**                  | Managed forests, wood fiber | Forest cover loss, deforestation |  Mismatch (Unauthorized/informal logging)  |
-| **Oil palm**                |    Oil palm concessions     |     True oil palm occurrence     |  Mismatch (Unauthorized/informal planting) |
+Next, two open-source datasets are downloaded for obtaining the recent state of oil palm plantations, as well as forest cover loss, which should both not take place outside of authorized areas. For timber, a raster data set containing yearly tree cover loss in Indonesia is obtained from Google Earth Engine under the Hansen model for the years 2000-2024, later filtered only for the years 2019-2024.  For oil palms, the open-source data set called “Palm probability model 2025a” was obtained from Google Earth Engine. As this was a probability model, a threshold of <90% was set to ensure that all mismatches identified later are truly oil palm-based. Similarly, the probability model works with a 10 m resolution precision, meaning that despite the above-mentioned threshold, occasionally, single pixels are identified as oil palms, despite being in the middle of the thick and diverse rain forests, which are certainly not plantations. To avoid a large number of faulty thresholds resulting from single (or a few) pixels; a threshold of >10 000 m*2 is applied (more than ten pixels sharing area).
 
-The objectives of the project are comparing open-source datasets, such as oil palm plantations as attributes of land cover maps, with official concession boundaries. To minimize extent and reach feasible data sizes, the project is focused on the Barat province of Kalimantan Island, Indonesia, otherwise known as West Kalimantan. GeoBoundaries are used as a source for provincial boundaries within Indonesia, downloaded as a shapefile containing the administrational level n. 1. 
-The analysed datasets are clipped to its extent in our script. Initially, we acquired concessions as polygon features (shapefiles, geojson files) for both commodities separately. It is important to mention here that for timber, the authorized areas of logging and wood management are divided into two categories. The first are Managed Forest concessions, are downloadable from the Global Forest Watch (GFW) for the entire world. They refer to areas allocated by a government for harvesting timber and other wood products in a public forest. The second are Wood Fiber concessions for Indonesia, which are issued locally for the exclusive production of pulp and paper products, also available from GFW. Both timber data sets are merged into one timber concessions data set with the merge_timber fundtion. Finally, the oil palm concessions are obtained through the same source (GFW).
+All data sets were chosen so that concession year matches the occurrence year as closely as possible. Their dates and other relevant information is further described under #Metadata.
 
-Additionally, two open-source datasets are downloaded for reviewing the current state of oil palm plantations, as well as forest cover loss (which should both not happen outside of authorized areas obtained in the first part of our project). For timber, a dataset containing deforestation or tree cover loss in Indonesia is obtained from Google Earth Engine.  This data set shows deforestation (tree loss) from 2000-2024. The Identify_mismatch_polygons function identifies regions where tree loss has occurred, but where not in the timber concession or oil palm concession polygons. For oil palms, the open-source data set called “Palm probability model 2025a” was downloaded from Google Earth Engine. The Identify_mismatch_polygons function is used to compare the open-source palm data with the official oil palm concessions and identify where oil palm cultivating occurs outside of the concession boundaries.
+The following **table** demonstrates the intended data structure further, as it lists which types of data are sourced and used for both commodities and their concessions/occurrence.
 
-The script identifies all mismatches within the extent of the project and calculates statistics for them. It returns the following statistics: the number of mismatch polygons, the total area of the mismatches within the extent (km²), the mean area of a mismatch polygon (km²),  the standard deviation of the area, and the total area of the mismatches expressed in number of football fields.
+| **Commodity**               |    **Concessions data**     |        **Occurrence data**       |
+| ---------------------------:| ---------------------------:| --------------------------------:|
+| **Timber**                  | Managed forests, wood fiber |         Forest cover loss        |
+| **Oil palm**                |    Oil palm concessions     |     True oil palm occurrence     |
+
+After data sets are acquired and processed, the script identifies all mismatches within the extent of the project and calculates statistics for them. It returns the following statistics: the total number of mismatch polygons, the total area of the mismatches within the extent (km²), the % of forest loss/oil palm planting outside of concessions areas, the mean area of a mismatch polygon (km²),  the standard deviation of the results, and the total area of the mismatches expressed in number of football fields. It stores the statistical results in tabular form as .csv files in the "output" directory. It also stores the mismatch polygons as .geojson files in the output directory, allowing the end user to handle mismatches directly if desired, since they are the primary output. Finally, the Shiny R package is used to create a temporary Web with a interactive map. With the use of ESRI-provided satellite imagery, the map comprehensively illustrates mismatches on top of original data sets, allowing the user to view them individually/together by selecting optional layers. It includes a description for all data sets on the top left, as well as having general map features, such as the legend, scale, or zoom-in/out feature. This final map makes it possible to interpret the mismatches on a visual level, rather than just knowing where they occur, allowing for deeper insight, possibly cause determination and reasoning.
 
 The project will support it's aims through the following 4 research questions:
-•	Q1: To what extent (in %) do the timber permit concessions align with open-source forest loss maps in the Kalimantan Barat province in Indonesia?
-•	Q2: What percentage of oil palm plantations fall within their designated concession areas in the Kalimantan Barat province in Indonesia?
-•	Q3: How many mismatch cases does our code identify, and what are the statistical values for them? (mean mismatch area, total number of mismatches, sd)
-•	Q4: Through use of RS, which new insights can be derived for the two largest mismatches for each commodity? Can visual inspection of such RS imagery be used for the interpretation of the causes for mismatch?
+•	Q1: What percentage of forest loss occurs outside of managed forests & wood fiber concessions?
+•	Q2: What percentage of oil palm plantations are grown outside of their designated concession areas?
+•	Q3: How many mismatch cases are identified, where are they happening, and what are the statistical dependencies behind them?
+•	Q4: Through use of satellite imagery, which new insights can be derived from the ten largest mismatches for each commodity? Can visual inspection of such imagery be used for the interpretation of the causes for mismatch when displayed through an interactive map?
 
 
 ## Getting started
@@ -36,9 +38,10 @@ The project will support it's aims through the following 4 research questions:
 ### Clone the git repository with an HTTPS
 git clone https://git.wur.nl/geoscripting-2025/staff/project/Project_Starter-Bali_starlings.git
 
-### Set the working directory to the project folder
-cd Project_Starter-Bali_Starlings (in terminal)
-or use the setwd() function in R
+### Set the working directory to the project directory
+Use either of the following examples (or your own preferred method) to navigate to the correct directory:
+- cd Project_Starter-Bali_Starlings (in terminal)
+- setwd() function in R
 
 ### Download data from MS Teams 
 There are a few data sets which could not be acquired through a URL link within the code, either due to size, or accessibility.
@@ -67,8 +70,10 @@ install.packages("leaflet")
 ## Usage
 Run the full main.R file. The script was developed in RStudio, so we recommend using it as the default IDE. The following should happen as result:
 - The mismatches identified by the script will be stored as .json files (as polygons) in the "output" directory.
-- The statistical results will be stored as a .csv file with two rows, one for each commodity, in the "output" directory.
+- The statistical results will be stored as a .csv files (per commodity) in the "output" directory.
 - A window will pop up with the Shiny Web Application with a box suggesting "open in Browser". Click on it and an interactive, visual map should open up.
+
+The Shiny Web Application may be navigated using the cursor. In the main screen, a base satellite imagery map is displayed. On top of it, several layers may be displayed, if selected in the box on the far left which includes layers, such as mismatches or . It is recommended to zoom in onto mismatches, since the extent of the Kayong province is still rather large. The +/- icons on the top of the map may be used to do so. The map is centered with true north at the top, and loads with all layers "turned on" on default apart from the 10 significant mismatches. The bottom of the map also displays the table with statistical results, which are connected to the layers displayed, and can therefore be turned on/off based on layer selection.
 
 A few examples/screenshots of output may be found below:
 
@@ -93,5 +98,40 @@ This short-term project was created by students of Wageningen University and Res
 If you have any questions, you can contact the following email address: 
 joelle@dontcontactme.gmail.com
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Sources and metadata
+
+# For the data sets (metadata)
+**Kayong regency extent:** 
+- Obtained from geoBoundaries using the following link: https://www.geoboundaries.org/simplifiedDownloads.html and specifying the following:
+- Name: Indonesia
+- ISO-3: IDN
+- Type: ADM2
+- Year: 2020
+- Source: BPS Statistics Indonesia
+**Oil palm concessions:**
+- URL: https://data.globalforestwatch.org/datasets/gfw::indonesia-oil-palm-concessions/about
+- Title: Indonesia oil palm concessions
+- Author: Indonesia Ministry of Forestry, Greenpeace, and WRI, accessed through Global Forest Watch (GFW)
+- Date: published February 15 2015, data last updated on October 10 2023
+- Extent: Indonesia
+- Resolution: at best 2 meters
+- Access: can be accessed via a download link
+- Size: 12.3 MB as a GeoJSON
+- Limitations: This data set is known to be incomplete, but it is currently the best available.
+
+**Legal timber logging concessions:**
+- URL: https://data.globalforestwatch.org/search?tags=logging%2520concessions AND https://data.globalforestwatch.org/datasets/gfw::indonesia-wood-fiber-concessions/about
+- Author: Global Forest Watch (GFW) (for both)
+- Date: published on 14 December 2021, last updated on 27 December 2023 AND 2nd April 2019 for Wood fiber concessions, last updated on the same day
+- Extent: worldwide (however, converted to .gpkg and clipped to extent of Indonesia) AND the extent of Indonesia
+- Resolution: at best 2 meters
+- Can be accessed via a download link 
+- Size: 7.28 MB (after clipping) AND xxx MB
+  
+# Sources used for scripting
+
+# Sources used for visualization
 
 
