@@ -1,12 +1,18 @@
 ## File for downloading necessary datasets
 
-# Function that downloads the second administration level of Indonesia, 
-# extracting the boundary of Kayong Utara regency (our ROI) as output.
-# Only executes the download, if the data is not downloaded already.
-# Requires no input, the output is a .geojson file called 
-# "Kayong_boundary.geojson" stored in the "data" directory.
-
 download_and_extract_Kayong <- function(adm2_URL) {
+  # Function that downloads Indonesia's second-level administrative boundaries 
+  # using a provided URL, extracts the boundary polygon for Kayong Utara 
+  # (the roi), and saves it as a Geojson file. Skips download and extraction 
+  # if the output file already exists to avoid redundant operations. Uses hardcoded regency 
+  # name for filtering after downloading the file.
+  #
+  # Input:
+  #   url: character string specifying the download URL for roi at administration level 2 
+  #
+  # Output:
+  #   sf object containing the single POLYGON or MULTIPOLYGON geometry for Kayong Utara
+  #   boundary, saved to "data/Kayong_boundary.geojson" if not already present
   
   # Define URL and destination paths
   dest_folder <- "data"
@@ -26,31 +32,43 @@ download_and_extract_Kayong <- function(adm2_URL) {
     kayong_utara <- indonesia_adm2[indonesia_adm2$shapeName == "Kayong Utara", ]
     
     # Save filtered data to output file
-    sf::st_write(kayong_utara, outputfile, driver = "GeoJSON", delete_dsn = TRUE)
+    st_write(kayong_utara, outputfile, driver = "GeoJSON", delete_dsn = TRUE)
     
     # Delete the temp ADM2 file to clean up
     file.remove(temp_file)
   }
 }
 
-# Function that downloads the concessions for wood fiber,
-# only executes if the data is not downloaded yet. 
-# Requires no input, the output is a json file called 
-# "wood_fiber_data.json" stored in the "data" directory.
 
 download_wood_fiber_concessions <- function(data_wood_fiber_URL){
+  # Function that downloads wood fiber concessions data from a specified URL source,
+  # extracts concessions, and saves as a JSON file. Skips download and extraction if the output file 
+  # already exist to avoid redundant downloading. 
+  #
+  # Input:
+  #   data_wood_fiber_URL: character string specifying the download URL for wood fiber 
+  #                       concessions data 
+  # Output:
+  #   sf object containing polygon or multipolygon geometries for wood fiber concessions,
+  #   saved to "data/wood_fiber_data.json" if not already present
   
   if(!file.exists('data/wood_fiber_data')){
     download.file(url = data_wood_fiber_URL, "data/wood_fiber_data.json")
   }
 }
 
-# Function that downloads the concessions of oil palms, 
-# only executes the download if the data is not downloaded yet. 
-# Requires no input, the output is a json file called 
-# "palm_tree_concessions.json" stored in the "data" directory.
-
 download_oil_palm_concessions <- function(data_oil_palm_URL){
+  # Function that downloads oil palm concessions data from a specified URL source,
+  # saving as a json file. Only executes the download if the output file 
+  # does not already exist to avoid redundant downloads.
+  #
+  # Input:
+  #   data_oil_palm_URL: character string specifying the download URL for oil palm 
+  #                     concessions data (JSON format)
+  #
+  # Output:
+  #   Raw json file "data/palm_tree_concessions.json" containing oil palm concessions data,
+  #   downloaded only if file missing. 
   
   if(!file.exists('data/oil_palm_data')){
     download.file(url = data_oil_palm_URL, "data/palm_tree_concessions.json")
