@@ -11,7 +11,7 @@ download_and_extract_Kayong <- function(adm2_URL) {
   #   url: character string specifying the download URL for roi at administration level 2 
   #
   # Output:
-  #   sf object containing the single POLYGON or MULTIPOLYGON geometry for Kayong Utara
+  #   sf object containing the single polygon or multipolygon geometry for Kayong Utara
   #   boundary, saved to "data/Kayong_boundary.geojson" if not already present
   
   # Define URL and destination paths
@@ -42,7 +42,7 @@ download_and_extract_Kayong <- function(adm2_URL) {
 
 download_wood_fiber_concessions <- function(data_wood_fiber_URL){
   # Function that downloads wood fiber concessions data from a specified URL source,
-  # extracts concessions, and saves as a JSON file. Skips download and extraction if the output file 
+  # extracts concessions, and saves as a json file. Skips download and extraction if the output file 
   # already exist to avoid redundant downloading. 
   #
   # Input:
