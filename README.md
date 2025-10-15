@@ -26,10 +26,10 @@ The following **table** demonstrates the intended data structure further, as it 
 After data sets are acquired and processed, the script identifies all mismatches within the extent of the project and calculates statistics for them. It returns the following statistics: the total number of mismatch polygons, the total area of the mismatches within the extent (km²), the % of forest loss/oil palm planting outside of concessions areas, the mean area of a mismatch polygon (km²),  the standard deviation of the results, and the total area of the mismatches expressed in number of football fields. It stores the statistical results in tabular form as .csv files in the "output" directory. It also stores the mismatch polygons as .geojson files in the output directory, allowing the end user to handle mismatches directly if desired, since they are the primary output. Finally, the Shiny R package is used to create a temporary Web with a interactive map. With the use of ESRI-provided satellite imagery, the map comprehensively illustrates mismatches on top of original data sets, allowing the user to view them individually/together by selecting optional layers. It includes a description for all data sets on the top left, as well as having general map features, such as the legend, scale, or zoom-in/out feature. This final map makes it possible to interpret the mismatches on a visual level, rather than just knowing where they occur, allowing for deeper insight, possibly cause determination and reasoning.
 
 The project will support it's aims through the following 4 research questions:
-•	Q1: What percentage of forest loss occurs outside of managed forests & wood fiber concessions?
-•	Q2: What percentage of oil palm plantations are grown outside of their designated concession areas?
-•	Q3: How many mismatch cases are identified, where are they happening, and what are the statistical dependencies behind them?
-•	Q4: Through use of satellite imagery, which new insights can be derived from the ten largest mismatches for each commodity? Can visual inspection of such imagery be used for the interpretation of the causes for mismatch when displayed through an interactive map?
+• Q1: What percentage of forest loss occurs outside of managed forests & wood fiber concessions?
+• Q2: What percentage of oil palm plantations are grown outside of their designated concession areas?
+• Q3: How many mismatch cases are identified, where are they happening, and what are the statistical dependencies behind them?
+• Q4: Through use of satellite imagery, which new insights can be derived from the ten largest mismatches for each commodity? Can visual inspection of such imagery be used for the interpretation of the causes for mismatch when displayed through an interactive map?
 
 
 ## Getting started
@@ -97,8 +97,6 @@ This short-term project was created by students of Wageningen University and Res
 ## Contacts
 If you have any questions, you can contact the following email address: 
 joelle@dontcontactme.gmail.com
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Sources and metadata
 
