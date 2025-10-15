@@ -237,8 +237,14 @@ server <- function(input, output, session) {
           fillOpacity = 0.4,
           color = "darkorange",
           weight = 1,
-          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
-          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
+          popup = ~paste0(
+            "Area (km²): ", round(area_m2 / 1e6, 2), "<br>",
+            "Deforestation Happened in: 20", layer
+          ),
+          label = ~paste0(
+            "Area (km²): ", round(area_m2 / 1e6, 2), " | ",
+            "Deforestation Happened in: 20", layer
+          )
         )
     }
     
@@ -276,8 +282,14 @@ server <- function(input, output, session) {
           fillOpacity = 1,
           color = "black",
           weight = 2,
-          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
-          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
+          popup = ~paste0(
+            "Area (km²): ", round(area_m2 / 1e6, 2), "<br>",
+            "Deforestation Happened in: 20", layer
+          ),
+          label = ~paste0(
+            "Area (km²): ", round(area_m2 / 1e6, 2), " | ",
+            "Deforestation Happened in: 20", layer
+          )
         )
     }
   })
