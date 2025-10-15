@@ -1,11 +1,17 @@
-# Load required packages
-library(sf)
-library(terra)
-
 load_if_path <- function(input) {
-  # Function loads geospatial data from a filepath into an sf or spatraster
-  # object, or returns the sf/spatraster object unchanged if its already such
-  # an object. 
+  # Function that loads geospatial data from a file path into appropriate spatial object 
+  # (sf for vector, SpatRaster for raster) or returns input unchanged if already an sf or 
+  # SpatRaster object. Automatically detects file type based on extension and handles 
+  # both file paths (character) and existing spatial objects transparently.
+  #
+  # Input:
+  #   input: character string (file path to geospatial data) OR existing sf object OR SpatRaster object
+  # Output:
+  #   sf object for vector files (.shp, .geojson, etc.), SpatRaster for raster files (.tif, .tiff),
+  #   or unchanged input if already sf/SpatRaster
+  #
+  #   Groks latest free version (used on 9/10/2025) has been used to refine this code. 
+  
   if (is.character(input)) {
     # Check file extension to determine if it's a raster or vector
     ext <- tools::file_ext(input)
@@ -23,19 +29,25 @@ load_if_path <- function(input) {
 }
 
 createExtent <- function(data, extent, output_path = NULL) {
-  # Function crops data to the extent that's provided. It supports vector and 
-  # raster (.tiff/.tif) input. 
+  # Function that crops geospatial data (vector or raster) to a specified extent boundary.
+  # Supports both sf vector data and SpatRaster raster data, automatically handles CRS 
+  # transformation, geometry validation, and conditional file saving. Crops vectors using 
+  # spatial intersection and rasters using crop+mask operations.
+  #
   # Input:
-  #   data: filepath to data accepts .tif/.tiff/.geojson/.json/.shp
-  #   extent: file of vector extent (e.g. .geojson)
-  #   output_path: optional entry for location the output must be saved to
-  # Returns: cropped data as an sf-object or spatraster-object
+  #   data: file path to geospatial data (.tif/.tiff/.geojson/.json/.shp) or existing sf/SpatRaster object
+  #   extent: file path to vector extent boundary (.geojson/.shp) or existing sf object defining crop boundary
+  #   output_path: optional character string for output file path (saves only if file doesn't exist)
+  #
+  # Output:
+  #   Cropped sf object (for vector input) or SpatRaster object (for raster input)
+  #   Optionally saves to output_path if provided and file doesn't exist
   
   # Load data and extent if they are file paths
   data <- load_if_path(data)
   extent <- load_if_path(extent)
   
-  # Handle vector (sf) data
+  # Handle vector data
   if (inherits(data, "sf")) {
     # Validate geometries
     data <- st_make_valid(data)
@@ -43,7 +55,7 @@ createExtent <- function(data, extent, output_path = NULL) {
     
     # Check if CRS matches, transform if necessary
     if (st_crs(data) != st_crs(extent)) {
-      message("Transforming CRS to match shapefile CRS")
+      message("Transforming CRS to match extents CRS")
       data <- st_transform(data, st_crs(extent))
     }
     
@@ -62,7 +74,7 @@ createExtent <- function(data, extent, output_path = NULL) {
     return(cropped_data)
   }
   
-  # Handle raster (SpatRaster) data
+  # Handle raster data
   else if (inherits(data, "SpatRaster")) {
     # Convert extent to SpatVector
     extent_vect <- vect(extent)
