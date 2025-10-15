@@ -16,6 +16,7 @@ source("R/extent.R")
 source("R/identifyMismatches.R")
 source("R/merge_timber.R")
 source("R/concessions_combined.R")
+source("R/GetLargestMismatches.R")
 source("R/saveOutput.R")
 source("R/statistics.R")
 
@@ -62,6 +63,10 @@ stats_oil_palm <- Statistics(mismatches_oil_palm)
 mismatches_wood <- Identify_mismatch_polygons(forest_loss_clipped, combined_concessions)
 stats_wood <- Statistics(mismatches_wood)
 
+### FIND BIGGEST MISMATCHES ###
+biggest_palm_mismatches <- get_largest_mismatches(mismatches_oil_palm)
+biggest_timber_mismatches <-get_largest_mismatches(mismatches_wood)
+
 ### STORE RESULTS ###
 
 ## Store the statistical results as .csv files ##
@@ -82,6 +87,8 @@ save_output(oil_palm_concessions_clipped, "palm_tree_concessions_clipped.geojson
 save_output(combined_forest_concessions, "forest_concessions.geojson", output_dir = "data")
 save_output(mismatches_oil_palm, "mismatches_oilpalm.geojson")
 save_output(mismatches_wood, "timber_mismatches.geojson")
+save_output(biggest_palm_mismatches, "biggest_mismatches_oilpalm.geojson")
+save_output(biggest_timber_mismatches, "biggest_timber_mismatches.geojson")
 
 # ===== RUN SHINY APP =====
 # For visualization
