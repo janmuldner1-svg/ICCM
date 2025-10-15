@@ -55,7 +55,7 @@ To be able to run the main script, download them following these three steps:
 
 3. Move the files you downloaded into the "data" directory
 
-Now, all necessary data will be ready in "data" for when the full main.R is run later on (see below).
+Now, all necessary data will be ready in "data" for when the full main.R is run later on (see below "Usage").
 
 ## Install necessary packages in R
 install.packages("sf")
