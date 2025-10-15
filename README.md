@@ -89,7 +89,7 @@ The code was created by the Bali starlings team, consisting of:
 ## License
 The project is distributed under the MIT license, more information on the license can be found in the LICENSE.txt file.
 
-## Acknowledgements 
+## Acknowledgments 
 The original idea for this project came from Space4Good. This company is among other things involved in deforestation monitoring for various Indonesian entities.
 Throughout the creation of this project we were in contact with Ramadhan from Space4Good, whom provided us with very helpful feedback.
 
@@ -99,9 +99,9 @@ This short-term project was created by students of Wageningen University and Res
 If you have any questions, you can contact the following email address: 
 joelle@dontcontactme.gmail.com
 
-## Sources and metadata
+# Sources and metadata
 
-# Data sets sourced (metadata)
+## Data sets sourced (metadata)
 **Kayong regency extent:** 
 - Obtained from geoBoundaries using the following link: https://www.geoboundaries.org/simplifiedDownloads.html and specifying the following:
 - Name: Indonesia
@@ -146,7 +146,7 @@ joelle@dontcontactme.gmail.com
 extent: whole world
 resolution: 30.92 meters
   
-# Sources for packages used
+## Sources for packages used
 - citation sf package: Pebesma E, Bivand R (2023). Spatial Data Science: With applications in R. Chapman and Hall/CRC. doi:10.1201/9780429459016, https://r-spatial.org/book/
 - citation terra package: Hijmans R (2025). terra: Spatial Data Analysis. R package version 1.8-73, https://github.com/rspatial/terra
 - citation dplyr package: Wickham H, François R, Henry L, Müller K, Vaughan D (2025). dplyr: A Grammar of Data Manipulation. R package version 1.1.4, https://dplyr.tidyverse.org
@@ -154,30 +154,34 @@ resolution: 30.92 meters
 - citation leaflet package: Cheng J, Schloerke B, Karambelkar B, Xie Y, Aden-Buie G (2025). leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library. R package version 2.2.3.9000, https://rstudio.github.io/leaflet/
 - citation base64enc package: Urbanek S (2024). base64enc: Tools for base64 Encoding. R package version 0.1-4, https://www.rforge.net/base64enc
 
-# Sources used for visualization
+## Sources used for visualization
 - https://www.rdocumentation.org/packages/shiny/versions/1.11.1
 - https://www.geeksforgeeks.org/r-language/shiny-package-in-r-programming/
 - https://www.rdocumentation.org/packages/leaflet/versions/2.2.2
 - https://www.geeksforgeeks.org/r-language/leaflet-package-in-r/
+- For background satellite imagery: Leaflet │ Titles © Esri -- Source: Esri, I-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community
 
-# Jupyter Notebook sources
+## Jupyter Notebook sources
 - geemap citation: Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. The Journal of Open Source Software, 5(51), 2305. https://doi.org/10.21105/joss.02305
 - Gorelick, N., Hancher, M., Dixon, M., Ilyushchenko, S., Thau, D., & Moore, R. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. Remote Sensing of Environment, 202, 18-27. https://doi.org/10.1016/j.rse.2017.06.031
 
-# General sources
+## General sources
 - https://www.rdocumentation.org/packages/xfun/versions/0.11/topics/file_ext
 - https://stackoverflow.com/questions/3402371/combine-two-data-frames-by-rows-rbind-when-they-have-different-sets-of-columns
 - https://www.datacamp.com/doc/r/merging
 - https://stackoverflow.com/questions/79343873/cropping-in-sf-flat-space-vs-spherical-geometry-and-sf-use-s2
+- Complete use of sources may also be found as in-line description in the script files
 
-# AI sources
-- Miscrosoft Copilot
-- ChatGPT
-- Claude
-- Gemini
-- Grok
+## AI source, version, release date
+- Miscrosoft Copilot (Unified Branding, 1.25095.161.0), release date: October 2025
+- ChatGPT-4o (GPT-4 Optimized), release date: October 2025
+- Claude (Claude Sonnet 4), release date: October 2025
+- Gemini (Gemini 2.5 Pro), release date: June 2025
+- Grok (Grok 4), release date: July 2025
 
-# Geoscripting tutorials sources
+AI was used for generating script ideas, writing code snippets, troubleshooting errors (mainly!), and improving documentation during the geoscripting project.
+
+## Geoscripting tutorials sources
 - Link: https://geoscripting-wur.github.io/
 - Authors: Jan Verbesselt, Dainius Masiliūnas, Arno Timmer
 - Last updated: 2025-08-18
