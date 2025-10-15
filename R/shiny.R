@@ -1,177 +1,65 @@
 library(shiny)
 library(leaflet)
 library(sf)
-library(base64enc)  # for encoding images as base64
+library(base64enc)  # For base64 image encoding
 
-# ===== SERVER =====
-server <- function(input, output, session) {
-  
-  # Convert the north arrow PNG image to a base64 data URI once when the server starts.
-  # Embedding this image in the leaflet map avoids issues with file serving.
-  img_base64 <- base64enc::dataURI(file = "www/north_arrow.png", mime = "image/png")
-  
-  # Render the initial Leaflet map with base imagery and UI controls
-  output$map <- renderLeaflet({
-    leaflet() %>%
-      addProviderTiles("Esri.WorldImagery") %>%   # Satellite imagery base layer
-      setView(lng = 110.05, lat = -1.07, zoom = 11) %>%  # Center on North Kayong Regency
-      
-      # Add the north arrow image as a fixed control in the top-right corner of the map
-      addControl(
-        html = sprintf("<img src='%s' style='width:70px; opacity:0.8;'>", img_base64),
-        position = "topright"
-      ) %>%
-      
-      # Add a custom legend describing the meaning of each color on the map
-      addControl(
-        html = "<div style='background:white; padding:12px 15px; border-radius:5px; font-size:16px; font-weight:bold; box-shadow: 0 0 8px rgba(0,0,0,0.3);'>
-                  <b>Legend</b><br>
-                  <span style='color:red;'>■</span> Palm Mismatches<br>
-                  <span style='color:orange;'>■</span> Timber Mismatches<br>
-                  <span style='color:blue;'>■</span> Forest Concessions<br>
-                  <span style='color:yellow;'>■</span> Palm Concessions<br>
-                  <span style='color:purple;'>■</span> Kayong Boundary
-                </div>",
-        position = "bottomright"
-      ) %>%
-      
-      # Add a scale bar (metric units only), styled by your CSS
-      addScaleBar(position = "bottomleft", options = list(imperial = FALSE))
-  })
-  
-  # Observe layer selection input and update the displayed layers on the map accordingly
-  observeEvent(input$layer, {
-    leafletProxy("map") %>%
-      clearShapes()  # Clear all polygons before adding new ones
-    
-    # Add the Kayong Boundary polygon if selected
-    if ("Kayong Boundary" %in% input$layer && !is.null(kayong_boundary)) {
-      leafletProxy("map") %>%
-        addPolygons(
-          data = kayong_boundary,
-          fillColor = "transparent",
-          fillOpacity = 0,
-          color = "purple",
-          weight = 3,
-          opacity = 1,
-          popup = ~paste("Region:", shapeName),
-          label = ~paste("Region:", shapeName)
-        )
-    }
-    
-    # Add Palm Concessions polygons if selected
-    if ("Palm Concessions" %in% input$layer && !is.null(palm_concessions)) {
-      leafletProxy("map") %>%
-        addPolygons(
-          data = palm_concessions,
-          fillColor = "yellow",
-          fillOpacity = 0.3,
-          color = "goldenrod",
-          weight = 1,
-          popup = ~paste("Company:", company, "<br>Area (km²):", round(shape_Area / 1e6, 2)),
-          label = ~paste("Company:", company)
-        )
-    }
-    
-    # Add Forest Concessions polygons if selected
-    if ("Forest Concessions" %in% input$layer && !is.null(forest_concessions)) {
-      leafletProxy("map") %>%
-        addPolygons(
-          data = forest_concessions,
-          fillColor = "blue",
-          fillOpacity = 0.3,
-          color = "darkblue",
-          weight = 1,
-          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
-          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
-        )
-    }
-    
-    # Add Timber Mismatches polygons if selected
-    if ("Timber Mismatches" %in% input$layer && !is.null(timber_mismatches)) {
-      leafletProxy("map") %>%
-        addPolygons(
-          data = timber_mismatches,
-          fillColor = "orange",
-          fillOpacity = 0.4,
-          color = "darkorange",
-          weight = 1,
-          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
-          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
-        )
-    }
-    
-    # Add Palm Mismatches polygons if selected
-    if ("Palm Mismatches" %in% input$layer && !is.null(concessions)) {
-      leafletProxy("map") %>%
-        addPolygons(
-          data = concessions,
-          fillColor = "red",
-          fillOpacity = 0.4,
-          color = "darkred",
-          weight = 1,
-          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
-          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
-        )
-    }
-  })
-  
-  # Render a summary table showing counts and areas of selected layers
-  output$layer_table <- renderTable({
-    layers <- list()
-    
-    if ("Palm Mismatches" %in% input$layer && !is.null(concessions)) {
-      layers[["Palm Mismatches"]] <- data.frame(
-        Features = nrow(concessions),
-        Area_km2 = round(sum(concessions$area_m2, na.rm = TRUE) / 1e6, 2)
-      )
-    }
-    
-    if ("Timber Mismatches" %in% input$layer && !is.null(timber_mismatches)) {
-      layers[["Timber Mismatches"]] <- data.frame(
-        Features = nrow(timber_mismatches),
-        Area_km2 = round(sum(timber_mismatches$area_m2, na.rm = TRUE) / 1e6, 2)
-      )
-    }
-    
-    if ("Forest Concessions" %in% input$layer && !is.null(forest_concessions)) {
-      layers[["Forest Concessions"]] <- data.frame(
-        Features = nrow(forest_concessions),
-        Area_km2 = round(sum(forest_concessions$area_m2, na.rm = TRUE) / 1e6, 2)
-      )
-    }
-    
-    if ("Palm Concessions" %in% input$layer && !is.null(palm_concessions)) {
-      layers[["Palm Concessions"]] <- data.frame(
-        Features = nrow(palm_concessions),
-        Area_km2 = round(sum(palm_concessions$shape_Area, na.rm = TRUE) / 1e6, 2)
-      )
-    }
-    
-    if ("Kayong Boundary" %in% input$layer && !is.null(kayong_boundary)) {
-      layers[["Kayong Boundary"]] <- data.frame(
-        Features = nrow(kayong_boundary),
-        Area_km2 = NA  # No area calculation for boundary polygons here
-      )
-    }
-    
-    # Combine all data frames into one for display
-    do.call(rbind, layers)
-  }, rownames = TRUE)
+# ==== Load your spatial data ====
+# (Assuming this is run at global level or at the top of shiny.R)
+
+concessions <- NULL
+palm_concessions <- NULL
+kayong_boundary <- NULL
+timber_mismatches <- NULL
+forest_concessions <- NULL
+
+if (file.exists("output/mismatches_oilpalm.geojson")) {
+  concessions <- st_read("output/mismatches_oilpalm.geojson")
+  concessions <- st_zm(concessions, drop = TRUE, what = "ZM")
+  if (!all(st_is_valid(concessions))) concessions <- st_make_valid(concessions)
+  concessions$area_m2 <- as.numeric(concessions$area_m2 %||% st_area(concessions))
 }
 
-# ===== UI =====
+if (file.exists("data/palm_tree_concessions_clipped.geojson")) {
+  palm_concessions <- st_read("data/palm_tree_concessions_clipped.geojson")
+  palm_concessions <- st_zm(palm_concessions, drop = TRUE, what = "ZM")
+  if (!all(st_is_valid(palm_concessions))) palm_concessions <- st_make_valid(palm_concessions)
+  palm_concessions$shape_Area <- as.numeric(palm_concessions$shape_Area)
+}
+
+if (file.exists("data/forest_concessions.geojson")) {
+  forest_concessions <- st_read("data/forest_concessions.geojson")
+  forest_concessions <- st_zm(forest_concessions, drop = TRUE, what = "ZM")
+  if (!all(st_is_valid(forest_concessions))) forest_concessions <- st_make_valid(forest_concessions)
+  forest_concessions$area_m2 <- as.numeric(forest_concessions$area_m2 %||% st_area(forest_concessions))
+}
+
+if (file.exists("data/Kayong_boundary.geojson")) {
+  kayong_boundary <- st_read("data/Kayong_boundary.geojson")
+  kayong_boundary <- st_zm(kayong_boundary, drop = TRUE, what = "ZM")
+  if (!all(st_is_valid(kayong_boundary))) kayong_boundary <- st_make_valid(kayong_boundary)
+}
+
+if (file.exists("output/timber_mismatches.geojson")) {
+  timber_mismatches <- st_read("output/timber_mismatches.geojson")
+  timber_mismatches <- st_zm(timber_mismatches, drop = TRUE, what = "ZM")
+  if (!all(st_is_valid(timber_mismatches))) timber_mismatches <- st_make_valid(timber_mismatches)
+  timber_mismatches$area_m2 <- as.numeric(timber_mismatches$area_m2 %||% st_area(timber_mismatches))
+}
+
+# === Base64 encode the north arrow image once globally ===
+img_base64 <- base64enc::dataURI(file = "www/north_arrow.png", mime = "image/png")
+
+# ==== UI ====
 ui <- fluidPage(
-  # Custom CSS to style the scale bar for better visibility
   tags$head(
     tags$style(HTML("
-  .leaflet-control-scale {
-    background-color: white !important;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 18px;       /* bigger font size */
-    font-weight: bold;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3)
+      .leaflet-control-scale {
+        background-color: white !important;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 0 8px rgba(0,0,0,0.2);
       }
     "))
   ),
@@ -187,8 +75,8 @@ ui <- fluidPage(
               <ul>
                 <li><b>Palm Mismatches</b>: Areas where oil palms are cultivated outside of designated concession zones.</li>
                 <li><b>Timber Mismatches</b>: Areas with noticeable forest loss outside of managed/ wood fiber concessions.</li>
-                <li><b>Forest Concessions</b>: The 'Timber concessions' data set is a merged dataset of the Managed Forests (MF) and Wood Fiber (WF) concessions obtained from Global Forest Watch, last updated in 2023 and 2019 respectively. It refers to areas allocated by a government for harvesting timber and other wood products in a public forest, as well as areas issued locally for the exclusive production of pulp and paper products.</li>
-                <li><b>Palm Concessions</b>: The 'Oil palm concessions' data set is obtained from Global Forest Watch, last updated in 2023. It refers to areas with current or planned oil palm plantations in Indonesia..</li>
+                <li><b>Forest Concessions</b>: Managed forest areas for timber and wood fiber production.</li>
+                <li><b>Palm Concessions</b>: Areas with current or planned oil palm plantations.</li>
                 <li><b>Kayong Boundary</b>: Administrative boundary of the region.</li>
               </ul>
               <p>Use the checkboxes below to toggle layers on the map.</p>")
@@ -208,3 +96,112 @@ ui <- fluidPage(
     )
   )
 )
+
+# ==== SERVER ====
+server <- function(input, output, session) {
+  
+  output$map <- renderLeaflet({
+    leaflet() %>%
+      addProviderTiles("Esri.WorldImagery") %>%
+      setView(lng = 110.05, lat = -1.07, zoom = 11) %>%
+      
+      # Add scale bar (metric only) in bottom left
+      addScaleBar(position = "bottomleft", options = list(imperial = FALSE)) %>%
+      
+      # Add the north arrow image control (bottom left above scale bar)
+      addControl(
+        html = sprintf("<img src='%s' style='width:60px; opacity:0.8;'>", img_base64),
+        position = "topright"
+      ) %>%
+      
+      # Add static legend box bottom right
+      addControl(
+        html = "<div style='background:white;padding:10px;border-radius:5px;font-size:16px;box-shadow:0 0 8px rgba(0,0,0,0.2);'>
+                  <b>Legend</b><br>
+                  <span style='color:red;'>■</span> Palm Mismatches<br>
+                  <span style='color:orange;'>■</span> Timber Mismatches<br>
+                  <span style='color:blue;'>■</span> Forest Concessions<br>
+                  <span style='color:yellow;'>■</span> Palm Concessions<br>
+                  <span style='color:purple;'>■</span> Kayong Boundary
+                </div>",
+        position = "bottomright"
+      )
+  })
+  
+  observeEvent(input$layer, {
+    leafletProxy("map") %>%
+      clearShapes()
+    
+    # Kayong Boundary (bottom layer)
+    if ("Kayong Boundary" %in% input$layer && !is.null(kayong_boundary)) {
+      leafletProxy("map") %>%
+        addPolygons(
+          data = kayong_boundary,
+          fillColor = "transparent",
+          fillOpacity = 0,
+          color = "purple",
+          weight = 3,
+          opacity = 1,
+          popup = ~paste("Region:", shapeName),
+          label = ~paste("Region:", shapeName)
+        )
+    }
+    
+    # Palm Concessions
+    if ("Palm Concessions" %in% input$layer && !is.null(palm_concessions)) {
+      leafletProxy("map") %>%
+        addPolygons(
+          data = palm_concessions,
+          fillColor = "yellow",
+          fillOpacity = 0.3,
+          color = "goldenrod",
+          weight = 1,
+          popup = ~paste("Company:", company, "<br>Area (km²):", round(shape_Area / 1e6, 2)),
+          label = ~paste("Company:", company)
+        )
+    }
+    
+    # Forest Concessions
+    if ("Forest Concessions" %in% input$layer && !is.null(forest_concessions)) {
+      leafletProxy("map") %>%
+        addPolygons(
+          data = forest_concessions,
+          fillColor = "blue",
+          fillOpacity = 0.3,
+          color = "darkblue",
+          weight = 1,
+          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
+          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
+        )
+    }
+    
+    # Timber Mismatches, with popup showing deforestation year from 'layer' column
+    if ("Timber Mismatches" %in% input$layer && !is.null(timber_mismatches)) {
+      leafletProxy("map") %>%
+        addPolygons(
+          data = timber_mismatches,
+          fillColor = "orange",
+          fillOpacity = 0.4,
+          color = "darkorange",
+          weight = 1,
+          popup = ~paste0("Area (km²): ", round(area_m2 / 1e6, 2),
+                          "<br>Deforestation Year: ", 2000 + as.numeric(layer)),
+          label = ~paste0("Year: ", 2000 + as.numeric(layer))
+        )
+    }
+    
+    # Palm Mismatches (top layer)
+    if ("Palm Mismatches" %in% input$layer && !is.null(concessions)) {
+      leafletProxy("map") %>%
+        addPolygons(
+          data = concessions,
+          fillColor = "red",
+          fillOpacity = 0.4,
+          color = "darkred",
+          weight = 1,
+          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
+          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
+        )
+    }
+  })
+}
