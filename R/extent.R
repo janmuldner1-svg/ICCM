@@ -10,7 +10,7 @@ load_if_path <- function(input) {
   #   sf object for vector files (.shp, .geojson, etc.), SpatRaster for raster files (.tif, .tiff),
   #   or unchanged input if already sf/SpatRaster
   #
-  #   Groks latest free version (used on 9/10/2025) has been used to refine this code. 
+  #   Groks latest free version (Grok 4) has been used to refine this code. 
   
   if (is.character(input)) {
     # Check file extension to determine if it's a raster or vector
