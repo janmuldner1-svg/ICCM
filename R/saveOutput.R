@@ -23,7 +23,7 @@ save_output <- function(data, filename, output_dir = "output") {
   }
   
   # Check file extension
-  file_ext <- tools::file_ext(filename)
+  file_ext <- tools::file_ext(filename) #source used for this line: https://www.rdocumentation.org/packages/xfun/versions/0.11/topics/file_ext
   
   if (file_ext == "geojson") {
     st_write(data, full_path, quiet = TRUE)
