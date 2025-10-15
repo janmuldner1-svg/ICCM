@@ -4,13 +4,14 @@ library(sf)
 library(base64enc)  # For base64 image encoding
 
 # ==== Load your spatial data ====
-# (Assuming this is run at global level or at the top of shiny.R)
 
 concessions <- NULL
 palm_concessions <- NULL
 kayong_boundary <- NULL
 timber_mismatches <- NULL
 forest_concessions <- NULL
+biggest_oilpalm <- NULL
+biggest_timber <- NULL
 
 if (file.exists("output/mismatches_oilpalm.geojson")) {
   concessions <- st_read("output/mismatches_oilpalm.geojson")
@@ -46,6 +47,20 @@ if (file.exists("output/timber_mismatches.geojson")) {
   timber_mismatches$area_m2 <- as.numeric(timber_mismatches$area_m2 %||% st_area(timber_mismatches))
 }
 
+if (file.exists("output/biggest_mismatches_oilpalm.geojson")) {
+  biggest_oilpalm <- st_read("output/biggest_mismatches_oilpalm.geojson")
+  biggest_oilpalm <- st_zm(biggest_oilpalm, drop = TRUE, what = "ZM")
+  if (!all(st_is_valid(biggest_oilpalm))) biggest_oilpalm <- st_make_valid(biggest_oilpalm)
+  biggest_oilpalm$area_m2 <- as.numeric(biggest_oilpalm$area_m2 %||% st_area(biggest_oilpalm))
+}
+
+if (file.exists("output/biggest_timber_mismatches.geojson")) {
+  biggest_timber <- st_read("output/biggest_timber_mismatches.geojson")
+  biggest_timber <- st_zm(biggest_timber, drop = TRUE, what = "ZM")
+  if (!all(st_is_valid(biggest_timber))) biggest_timber <- st_make_valid(biggest_timber)
+  biggest_timber$area_m2 <- as.numeric(biggest_timber$area_m2 %||% st_area(biggest_timber))
+}
+
 # === Base64 encode the north arrow image once globally ===
 img_base64 <- base64enc::dataURI(file = "www/north_arrow.png", mime = "image/png")
 
@@ -78,13 +93,19 @@ ui <- fluidPage(
                 <li><b>Forest Concessions</b>: Managed forest areas for timber and wood fiber production.</li>
                 <li><b>Palm Concessions</b>: Areas with current or planned oil palm plantations.</li>
                 <li><b>Kayong Boundary</b>: Administrative boundary of the region.</li>
+                <li><b>Biggest Palm Mismatches</b>: 10 Largest palm mismatches in opaque red.</li>
+                <li><b>Biggest Timber Mismatches</b>: 10 Largest timber mismatches in opaque yellow.</li>
               </ul>
               <p>Use the checkboxes below to toggle layers on the map.</p>")
       ),
       checkboxGroupInput(
         "layer",
         "Layers:",
-        choices = c("Palm Mismatches", "Timber Mismatches", "Forest Concessions", "Palm Concessions", "Kayong Boundary"),
+        choices = c(
+          "Palm Mismatches", "Timber Mismatches", "Forest Concessions",
+          "Palm Concessions", "Kayong Boundary",
+          "Biggest Palm Mismatches", "Biggest Timber Mismatches"
+        ),
         selected = c("Palm Mismatches", "Timber Mismatches", "Forest Concessions", "Palm Concessions", "Kayong Boundary")
       ),
       width = 3
@@ -108,7 +129,7 @@ server <- function(input, output, session) {
       # Add scale bar (metric only) in bottom left
       addScaleBar(position = "bottomleft", options = list(imperial = FALSE)) %>%
       
-      # Add the north arrow image control (bottom left above scale bar)
+      # Add the north arrow image control (top right)
       addControl(
         html = sprintf("<img src='%s' style='width:60px; opacity:0.8;'>", img_base64),
         position = "topright"
@@ -122,7 +143,9 @@ server <- function(input, output, session) {
                   <span style='color:orange;'>■</span> Timber Mismatches<br>
                   <span style='color:blue;'>■</span> Forest Concessions<br>
                   <span style='color:yellow;'>■</span> Palm Concessions<br>
-                  <span style='color:purple;'>■</span> Kayong Boundary
+                  <span style='color:purple;'>■</span> Kayong Boundary<br>
+                  <span style='color:red;'>■</span> Biggest Palm Mismatches<br>
+                  <span style='color:orange;'>■</span> Biggest Timber Mismatches
                 </div>",
         position = "bottomright"
       )
@@ -201,6 +224,35 @@ server <- function(input, output, session) {
           weight = 1,
           popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
           label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
+        )
+    }
+    
+    # Biggest Palm Mismatches (same fill as Palm Mismatches but black border)
+    if ("Biggest Palm Mismatches" %in% input$layer && !is.null(biggest_oilpalm)) {
+      leafletProxy("map") %>%
+        addPolygons(
+          data = biggest_oilpalm,
+          fillColor = "red",
+          fillOpacity = 1,
+          color = "black",       # black border
+          weight = 2,
+          popup = ~paste("Area (km²):", round(area_m2 / 1e6, 2)),
+          label = ~paste("Area (km²):", round(area_m2 / 1e6, 2))
+        )
+    }
+    
+    # Biggest Timber Mismatches (same fill as Timber Mismatches but black border)
+    if ("Biggest Timber Mismatches" %in% input$layer && !is.null(biggest_timber)) {
+      leafletProxy("map") %>%
+        addPolygons(
+          data = biggest_timber,
+          fillColor = "orange",
+          fillOpacity = 1,
+          color = "black",       # black border
+          weight = 2,
+          popup = ~paste0("Area (km²): ", round(area_m2 / 1e6, 2),
+                          "<br>Deforestation Year: ", 2000 + as.numeric(layer)),
+          label = ~paste0("Year: ", 2000 + as.numeric(layer))
         )
     }
   })
