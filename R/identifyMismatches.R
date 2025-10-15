@@ -15,7 +15,7 @@ Identify_mismatch_polygons <- function(commodities_clipped, concessions_clipped)
   #   sf object containing single-part POLYGON geometries of mismatch areas >= 10,000 m²,
   #   with additional 'area_m2' column containing calculated polygon areas
   
-  sf_use_s2(FALSE)
+  sf_use_s2(FALSE)commodities
   
   # Identifying mismatches between concessions and commodities
   mismatches <- mask(commodities_clipped, concessions_clipped, inverse = TRUE)
