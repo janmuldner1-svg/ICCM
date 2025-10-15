@@ -7,7 +7,6 @@ if(!dir.exists("output")){dir.create("output")}
 
 # import packages
 library(sf)
-#library(sits)
 library(terra)
 library(dplyr)
 
@@ -83,15 +82,6 @@ save_output(oil_palm_concessions_clipped, "palm_tree_concessions_clipped.geojson
 save_output(combined_forest_concessions, "forest_concessions.geojson", output_dir = "data")
 save_output(mismatches_oil_palm, "mismatches_oilpalm.geojson")
 save_output(mismatches_wood, "timber_mismatches.geojson")
-
-###
-
-#potentially use/remove
-# Write GeoJSON of filtered polygons
-
-# st_write(mismatches_oil_palm, "output/mismatches_oilpalm.geojson")
-# st_write(oil_palm_concessions_clipped, "data/palm_tree_concessions_clipped.geojson")
-# st_write(combined_forest_concessions, "data/forest_concessions.geojson")
 
 # ===== RUN SHINY APP =====
 # For visualization
