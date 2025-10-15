@@ -8,6 +8,6 @@
 library(dplyr)
 
 concessions_combined <- function(json1, json2) {
-  combined <- bind_rows(json1, json2)
+  combined <- bind_rows(json1, json2) # source used for this line: https://stackoverflow.com/questions/3402371/combine-two-data-frames-by-rows-rbind-when-they-have-different-sets-of-columns
   return(combined)
 }
