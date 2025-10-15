@@ -16,7 +16,7 @@ merge_timber <- function(managed_forest_clipped, wood_fiber_clipped){
   #   if file doesn't exist. No return value.
   
   # Combine the two cropped spatial datasets using rbind()
-  combined_concessions <- rbind(managed_forest_clipped, wood_fiber_clipped)
+  combined_concessions <- rbind(managed_forest_clipped, wood_fiber_clipped) #source used for this line: https://www.datacamp.com/doc/r/merging
   
   # Write the combined GeoJSON to file if it does not already exist
   if(!file.exists("data/timber_concessions.geojson")){
