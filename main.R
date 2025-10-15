@@ -73,13 +73,10 @@ biggest_timber_mismatches <-get_largest_mismatches(mismatches_wood)
 
 #  Stats for oil palms
 save_output(stats_oil_palm, "stats_oil_palm.csv")
-write.csv(stats_oil_palm, file = "output/stats_oil_palm.csv", row.names = FALSE)
 
 # Stats for timber
 save_output(stats_wood, "stats_timber.csv")
-write.csv(stats_wood, file = "output/stats_timber.csv", row.names = FALSE)
 
-print("The results were saved into /output directory as .csv file")
 
 ## Store the mismatches as .geojson files into output ##
 save_output(mismatches_oil_palm, "mismatches_oilpalm.geojson")
