@@ -1,8 +1,16 @@
 Statistics <- function (filtered_polygons_sf){
-  #General statistics, calculates respectively: nr. of polygons, total area (m²), 
-  #mean area (m²), standard deviation of area (m²), and puts this (respectively) 
-  #into a dataframe where m² is converted to km². Requires the data with
-  #filtered polygons as an sf object as input. 
+  # Function that calculates general statistics for an sf object containing polygons.
+  # Computes: number of polygons, total area (in m²), mean area (in m²), and 
+  # standard deviation of area (in m²). Puts this information in a dataframe 
+  # (which is there converted to km² if applicable)
+  # Uses sf geometry operations to calculate areas and summary statistics.
+  #
+  # Input:
+  #   sf_data: sf object containing filtered polygons with valid geometry
+  #
+  # Output:
+  #   data.frame with columns: n_polygons, total_area_km2, mean_area_km2, sd_area_km2
+
   n_polygons <- nrow(filtered_polygons_sf)
   total_area <- sum(filtered_polygons_sf$area_m2)
   mean_area <- mean(filtered_polygons_sf$area_m2)
