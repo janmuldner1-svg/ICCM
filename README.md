@@ -2,7 +2,7 @@
 
 - Title: **Identifying Commodity Concession Mismatches in the North Kayong Regency of Indonesia**
 - Subtitle: Uncovering where forest cover loss and oil palm planting occur outside of designated concession areas using geo-data sets, scripting, and visualization
-- Team name and members: **Bali Starlings; Jan Müldner, Joelle van Drie, Tosca Koeze, Pascal Dubbelman**
+- Team members: **Jan Müldner, Joelle van Drie, Pascal Dubbelman, Tosca Koeze**
 - Challenge number: **Challenge 1**
 - Description on how to run/reproduce can be found under ## Getting started
 
@@ -96,8 +96,8 @@ Throughout the creation of this project we were in contact with Ramadhan from Sp
 This short-term project was created by students of Wageningen University and Research under the course Geoscripting. 
 
 ## Contacts
-If you have any questions, you can contact the following email address: 
-joelle@dontcontactme.gmail.com
+If you have any questions, you can contact the following email address:
+jan.muldner1@gmail.com
 
 # Sources and metadata
 
